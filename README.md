@@ -4,6 +4,8 @@
 
 # About the game
 
+**Unity Version :** 6000.3.6f1
+
 ....
 
 # Team
