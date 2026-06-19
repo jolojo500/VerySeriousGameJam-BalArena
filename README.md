@@ -1,10 +1,10 @@
 # The Very Serious Game Jam
 
-**Theme :** ...
+**Theme :** Spin to Win
 
 # About the game
 
-**Unity Version :** 6000.3.6f1
+**Unity Version :** 6000.5.0f1
 
 ....
 
