@@ -44,6 +44,7 @@ namespace Venice
             Controllers.Init(this);
             Attributes.MaxHealth = 100;
             Attributes.MaxSpin = 100;
+            Attributes.MaxSpotLight = 100;
             Attributes.AddToHealth(Attributes.MaxHealth);
             Attributes.AddToSpin(Attributes.MaxSpin);
         }
@@ -141,6 +142,7 @@ namespace Venice
     {
         public float MaxHealth;
         public float MaxSpin;
+        public float MaxSpotLight;
         public float CurrentHealth
         {
             get;
@@ -152,10 +154,16 @@ namespace Venice
             private set;
         }
 
+        public float CurrentSpotLight
+        {
+            get;
+            private set;
+        }
 
         public bool Grounded = false, Damaged = false;
         public UnityEvent<Tuple<int, int>> OnHealthChanged= new UnityEvent<Tuple<int, int>>();
         public UnityEvent<Tuple<int, int>> OnSpinChanged = new UnityEvent<Tuple<int, int>>();
+        public UnityEvent<Tuple<int, int>> OnSpotLightChanged = new UnityEvent<Tuple<int, int>>();
 
         public BallerinaAttributes()
         {
@@ -173,6 +181,12 @@ namespace Venice
             Debug.Log(CurrentSpin);
         }
 
+        public void AddToSpotLight(float amount)
+        {
+            CurrentSpotLight = Mathf.Clamp(CurrentSpotLight + amount, 0, MaxSpotLight);
+            OnSpotLightChange((int)CurrentSpotLight, (int)MaxSpotLight);
+            Debug.Log(CurrentSpotLight);
+        }
         public void OnHealthChange(int newHealth, int maxHealth)
         {
             OnHealthChanged?.Invoke( new Tuple<int, int>(newHealth, maxHealth));
@@ -180,6 +194,10 @@ namespace Venice
         public void OnSpinChange(int newESP, int maxESP)
         {
             OnSpinChanged?.Invoke( new Tuple<int, int>(newESP, maxESP));
+        }
+        public void OnSpotLightChange(int newESP, int maxESP)
+        {
+            OnSpotLightChanged?.Invoke(new Tuple<int, int>(newESP, maxESP));
         }
 
     }
