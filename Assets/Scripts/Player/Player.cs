@@ -15,7 +15,7 @@ namespace Venice
         public PlayerCollision Collision = new PlayerCollision();
         public Collider PlayerCollider;
         public NeoInputManager InputManager;
-        public PlayerAttributes Attributes = new PlayerAttributes();
+        public BallerinaAttributes Attributes = new BallerinaAttributes();
 
         // Hit Frame Data
         public bool IsInvincible, IsInIF;
@@ -56,7 +56,6 @@ namespace Venice
 
         public void FixedUpdate()
         {
-            BindValues();
             Controllers.FixedUpdate();
         }
 
@@ -138,7 +137,7 @@ namespace Venice
     }
 
     [Serializable]
-    public class PlayerAttributes
+    public class BallerinaAttributes
     {
         public float MaxHealth;
         public float MaxSpin;
@@ -158,7 +157,7 @@ namespace Venice
         public UnityEvent<Tuple<int, int>> OnHealthChanged= new UnityEvent<Tuple<int, int>>();
         public UnityEvent<Tuple<int, int>> OnSpinChanged = new UnityEvent<Tuple<int, int>>();
 
-        public PlayerAttributes()
+        public BallerinaAttributes()
         {
         }
 
@@ -171,6 +170,7 @@ namespace Venice
         {
             CurrentSpin = Mathf.Clamp(CurrentSpin + amount, 0, MaxSpin);
             OnSpinChange((int)CurrentSpin, (int)MaxSpin);
+            Debug.Log(CurrentSpin);
         }
 
         public void OnHealthChange(int newHealth, int maxHealth)

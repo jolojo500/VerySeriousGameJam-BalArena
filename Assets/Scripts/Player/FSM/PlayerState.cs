@@ -15,7 +15,7 @@ namespace Venice
         public PhysicsInfo PhysicsInfo => Player.PhysicsInfo;
         public PlayerVisual Visual => Player.Visual;
         public PlayerCollision Collision => Player.Collision;
-        public PlayerAttributes Attributes => Player.Attributes;
+        public BallerinaAttributes Attributes => Player.Attributes;
 
         public NeoInputManager Input => Player.InputManager;
         public bool JumpRequested = false;

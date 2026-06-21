@@ -5,26 +5,22 @@ using Venice;
 
 public class UIManager : MonoBehaviour
 {
-    public HealthBar HealthBar;
-    public PsychokinesisBar PsychokinesisBar;
+    public MeterBar SpinBar;
 
     void Start()
     {
         Player.Instance.Attributes.OnHealthChanged.AddListener(UpdateHealthBar);
-        Player.Instance.Attributes.OnSpinChanged.AddListener(UpdatePsychoBar);
+        Player.Instance.Attributes.OnSpinChanged.AddListener(UpdateSpinBar);
     }
 
     public void UpdateHealthBar(Tuple<int, int> healthData)
     {
-        HealthBar.SetMaxHealth(healthData.Item2);
-
-        HealthBar.SetHealth(healthData.Item1);
     }
     
-    public void UpdatePsychoBar(Tuple<int, int>psychoData)
+    public void UpdateSpinBar(Tuple<int, int>psychoData)
     {
-        PsychokinesisBar.SetMaxPsycho(psychoData.Item2);
+        SpinBar.SetMaxAmount(psychoData.Item2);
 
-        PsychokinesisBar.SetPsycho(psychoData.Item1);
+        SpinBar.SetAmount(psychoData.Item1);
     }
 }

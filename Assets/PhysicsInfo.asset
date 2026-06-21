@@ -74,7 +74,7 @@ MonoBehaviour:
   AirDrag: 3
   JumpAmount: 2
   Gravity: 20
-  JumpStrength: 11
+  JumpStrength: 15
   DoubleJumpMultiplier: 0.6
   JumpCutoff: 4
   MaxFallSpeed: 20
