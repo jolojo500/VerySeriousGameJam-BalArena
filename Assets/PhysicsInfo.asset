@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 626bd21bf52aff442b70abee26e3b573, type: 3}
+  m_Name: PhysicsInfo
+  m_EditorClassIdentifier: Assembly-CSharp::Venice.PhysicsInfo
+  Acceleration: 10
+  Deceleration: 5
+  Friction: 1
+  MaxSpeed: 5
+  TopSpeed: 10
+  SlopeRepelDownHill: 70
+  SlopeRepelUpHill: 30
+  TurnRate: 2.6
+  SpeedLoss: 4
+  TurnRateCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  SpeedLossCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -0.5
+      outSlope: -0.033609953
+      tangentMode: 1
+      weightedMode: 3
+      inWeight: 0
+      outWeight: 0.3542039
+    - serializedVersion: 3
+      time: 1
+      value: 0.5
+      inSlope: -1.4396012
+      outSlope: -1.4396012
+      tangentMode: 0
+      weightedMode: 3
+      inWeight: 0.26296967
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  AirAcceleration: 15
+  AirDeceleration: 5
+  AirDrag: 3
+  JumpAmount: 2
+  Gravity: 20
+  JumpStrength: 11
+  DoubleJumpMultiplier: 0.6
+  JumpCutoff: 4
+  MaxFallSpeed: 20
+  CoyoteTime: 0.15
+  FloatAcceleration: 15
+  FloatDeceleration: 80
+  FloatDrag: 10
+  MinFloatSpeed: 1
+  MaxFloatSpeed: 6
+  FloatTurnRate: 2.6
+  FloatTurnRateCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  FloatDashAcceleration: 150
+  FloatDashMaxSpeed: 20
+  FloatDashTurnRateMultiplier: 0.15
+  FloatDashESPDrainRate: 10
