@@ -52,12 +52,15 @@ public class Entity : MonoBehaviour
 
     public Rigidbody Rb;
     public PhysicsInfo PhysicsInfo;
+    public BallerinaAttributes Attributes = new BallerinaAttributes();
 
 
 
 
 
-
+    public virtual void Init()
+    {
+    }
     public void SetHorizontalVelocity(Vector3 newVel)
     {
         Vector3 verticalVel = VerticalVelocity;
@@ -77,9 +80,9 @@ public class Entity : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
-        
+
     }
 
     public bool HandleTimer(ref float timer)

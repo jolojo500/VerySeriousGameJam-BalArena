@@ -139,8 +139,8 @@ namespace Venice
 
             if (Input.GetButtonDown("Crouch"))
             {
-                Debug.Log("Bruih");
-                Player.Attributes.AddToSpin(-25);
+                Player.Attributes.AddToSpotLight(Random.Range(-3, -1));
+                Machine.Set<PS_Damaged>();
             }
             if (Input.GetButtonDown(GamePreference.JumpButton))
             {

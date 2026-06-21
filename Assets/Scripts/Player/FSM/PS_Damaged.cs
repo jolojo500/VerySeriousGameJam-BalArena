@@ -8,6 +8,7 @@ namespace Venice
 
     public class PS_Damaged : PlayerState
     {
+        public HitInfo info;
 
         
         public float RecoveryTimer = .5f;
@@ -23,25 +24,34 @@ namespace Venice
             Attributes.Grounded = true;
             Attributes.Damaged = true;
             Player.InputManager.BlockInput = true;
-            RecoveryTimer = .5f; 
-            Player.Rb.linearVelocity = Vector3.zero;
-            Player.Rb.AddForce(-Transform.forward*40000*Time.deltaTime);
+            RecoveryTimer = .5f;
+            Vector3 source = (info == null) ? Transform.position + Vector3.forward:info.SourcePosition;
+            Vector3 dir = (Transform.position - source).normalized;
+            Player.SetHorizontalVelocity(dir * (info?.KnockbackForce ?? 5));
+            Player.SetVerticalVelocity(Vector3.up * 5f);
             IsDamaged = true;
+            Visual.Skin.material.SetInt("_Hurted", 1);
             base.OnEnter();
         }
 
         public override void OnExit()
         {
-            
+
+            Visual.Skin.material.SetInt("_Hurted", 0);
             Player.InputManager.BlockInput = false;
             Player.Rb.linearVelocity = -Transform.forward;
             IsDamaged = false;
+            info = null;
             base.OnExit();
         }
 
         public override void OnFixedUpdate()
         {
             base.OnFixedUpdate();
+            if (Player.YSpeed < 0 && Collision.AirGroundCollision())
+            {
+                Machine.Set<PS_Move>();
+            }
         }
 
         
@@ -52,14 +62,6 @@ namespace Venice
 
         public override void OnUpdate()
         {
-            if (Player.HandleTimer(ref RecoveryTimer))
-            {
-                Machine.Set<PS_Move>();
-
-                return;
-            }
-            base.OnUpdate();
-
         }
 
         public override void OnVisualUpdate()

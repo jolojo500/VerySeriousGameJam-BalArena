@@ -8,7 +8,8 @@ public class SpotLightObject : RWorldObject
 
     public void OnEnterIt(Entity entity)
     {
-
+        Debug.Log("Test");
+        entity.Attributes.IsInSpotLight = true;
     }
 
 
@@ -16,6 +17,7 @@ public class SpotLightObject : RWorldObject
     public void OnExitIt(Entity entity)
     {
 
+        entity.Attributes.IsInSpotLight = false;
     }
 
     [Header("Area")]
@@ -42,6 +44,8 @@ public class SpotLightObject : RWorldObject
     private void Start()
     {
         PickNewTarget();
+        OnEnter.AddListener(OnEnterIt);
+        OnExit.AddListener(OnExitIt);
     }
 
     private void Update()

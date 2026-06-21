@@ -11,12 +11,9 @@ namespace Venice
 
         public static Player Instance { get; private set; }
         public PlayerStateMachine Machine;
-        public AttackHitbox AttackHitbox;
-        public PlayerControllers Controllers = new PlayerControllers();
         public PlayerCollision Collision = new PlayerCollision();
         public Collider PlayerCollider;
         public NeoInputManager InputManager;
-        public BallerinaAttributes Attributes = new BallerinaAttributes();
 
         // Hit Frame Data
         public bool IsInvincible, IsInIF;
@@ -28,6 +25,7 @@ namespace Venice
 
         [ReadOnly] public string CurrentState = "";
         public float SPINLossRate = 2;
+        public PlayerControllers PlayerControllers = new PlayerControllers();
 
         private void Awake()
         {
@@ -42,12 +40,13 @@ namespace Venice
             Visual = GetComponentInChildren<PlayerVisual>();
             Machine = GetComponent<PlayerStateMachine>();
             Machine.Init();
-            Controllers.Init(this);
+            PlayerControllers.Init(this);
             Attributes.MaxHealth = 100;
             Attributes.MaxSpin = 100;
             Attributes.MaxSpotLight = 100;
             Attributes.AddToHealth(Attributes.MaxHealth);
             Attributes.AddToSpin(Attributes.MaxSpin);
+            Attributes.AddToSpotLight(0);
         }
 
         // Start is called before the first frame update
@@ -56,16 +55,23 @@ namespace Venice
             Init();
         }
 
+        public void OnDrawGizmos()
+        {
+            if (Machine.IsCurrentState<PS_Attack>())
+            {
+                Gizmos.DrawWireSphere((transform.position + Vector3.up) + Rb.linearVelocity.normalized * 0.3f, 1f);
+            }
+        }
         public void FixedUpdate()
         {
-            Controllers.FixedUpdate();
+            PlayerControllers.FixedUpdate();
         }
 
         // Update is called once per frame
-        void Update()
+        protected override void Update()
         {
-           
-            Controllers.Update();
+            base.Update();
+            PlayerControllers.Update();
             HandleInvulnerability();
             CurrentState = Machine.CurrentState?.GetType().Name ?? "";
 
@@ -77,9 +83,16 @@ namespace Venice
                 }
             }
 
-            if(HandleTimer(ref OOCTimer))
+            if (HandleTimer(ref OOCTimer))
             {
                 UnlockInputs();
+            }
+
+
+            if (Attributes.IsInSpotLight)
+            {
+                Debug.Log("Test");
+                Attributes.AddToSpotLight(4f * Time.deltaTime);
             }
         }
         public void BlockInput(StageObject stageObject)
@@ -109,7 +122,7 @@ namespace Venice
                 {
                     Invulnerable();
                     Machine.Set<PS_Damaged>();
-                } 
+                }
                 else
                 {
                     TriggerDeath();
@@ -117,7 +130,12 @@ namespace Venice
             }
         }
 
+        public void OnHit(HitInfo hitInfo)
+        {
 
+            Machine.Get<PS_Damaged>().info = hitInfo;
+            Machine.Set<PS_Damaged>();
+        } 
         private void TriggerDeath()
         {
             Debug.Log("Oh no");
@@ -144,27 +162,20 @@ namespace Venice
         public float MaxHealth;
         public float MaxSpin;
         public float MaxSpotLight;
-        public float CurrentHealth
-        {
-            get;
-            private set;
-        }
-        public float CurrentSpin
-        {
-            get;
-            private set;
-        }
 
-        public float CurrentSpotLight
-        {
-            get;
-            private set;
-        }
+        public float CurrentHealth;
 
-        public bool Grounded = false, Damaged = false;
-        public UnityEvent<Tuple<int, int>> OnHealthChanged= new UnityEvent<Tuple<int, int>>();
+        public float CurrentSpin;
+
+        public float CurrentSpotLight;
+
+
+
+        public bool Grounded = false, Damaged = false, IsInSpotLight = false;
+        public UnityEvent<Tuple<int, int>> OnHealthChanged = new UnityEvent<Tuple<int, int>>();
         public UnityEvent<Tuple<int, int>> OnSpinChanged = new UnityEvent<Tuple<int, int>>();
         public UnityEvent<Tuple<int, int>> OnSpotLightChanged = new UnityEvent<Tuple<int, int>>();
+
 
         public BallerinaAttributes()
         {
@@ -179,22 +190,20 @@ namespace Venice
         {
             CurrentSpin = Mathf.Clamp(CurrentSpin + amount, 0, MaxSpin);
             OnSpinChange((int)CurrentSpin, (int)MaxSpin);
-            Debug.Log(CurrentSpin);
         }
 
         public void AddToSpotLight(float amount)
         {
             CurrentSpotLight = Mathf.Clamp(CurrentSpotLight + amount, 0, MaxSpotLight);
             OnSpotLightChange((int)CurrentSpotLight, (int)MaxSpotLight);
-            Debug.Log(CurrentSpotLight);
         }
         public void OnHealthChange(int newHealth, int maxHealth)
         {
-            OnHealthChanged?.Invoke( new Tuple<int, int>(newHealth, maxHealth));
+            OnHealthChanged?.Invoke(new Tuple<int, int>(newHealth, maxHealth));
         }
         public void OnSpinChange(int newESP, int maxESP)
         {
-            OnSpinChanged?.Invoke( new Tuple<int, int>(newESP, maxESP));
+            OnSpinChanged?.Invoke(new Tuple<int, int>(newESP, maxESP));
         }
         public void OnSpotLightChange(int newESP, int maxESP)
         {

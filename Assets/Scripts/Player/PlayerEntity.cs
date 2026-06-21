@@ -18,21 +18,11 @@ public class PlayerEntity : Entity
 
 
 
-    public virtual void Init()
+    public override void Init()
     {
         Rb = GetComponent<Rigidbody>();
     }
 
-
-    void Start()
-    {
-        
-    }
-
-
-    void Update()
-    {
-    }
     public void ToggleInvulnerability(float v)
     {
         _invulnerabilityTimer = v;

@@ -20,9 +20,12 @@ public class MeterBar : MonoBehaviour
    
     public void SetAmount(int health)
     {
+        if (health < amount)
+        {
+            this.ApplySquashAndStretch(1.1f, .2f);
+        }
         amount = health;
         WasChanged = true;
-        this.ApplySquashAndStretch(1.1f, .2f);
         timeOut = .4f;
     }
 
@@ -34,6 +37,13 @@ public class MeterBar : MonoBehaviour
             if (slider.fillAmount > amount/max)
             {
                 slider.fillAmount = Mathf.Max(slider.fillAmount - Time.deltaTime * 5f, amount / max);
+                return;
+            }
+
+            if (slider.fillAmount < amount / max)
+            {
+                slider.fillAmount = Mathf.Min(slider.fillAmount + Time.deltaTime * 5f, amount / max);
+                sliderReactive.fillAmount = slider.fillAmount;
                 return;
             }
             if (timeOut > 0f)
