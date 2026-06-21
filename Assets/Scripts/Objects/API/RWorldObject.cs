@@ -9,90 +9,90 @@ namespace Venice
     public class RWorldObject : RColCallback
     {
         public bool ExposeEvents = false;
-        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when an object or player enters contact")] public UnityEvent<Player> OnEnter = new UnityEvent<Player>();
-        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when an object or player stays in contact")] public UnityEvent<Player> OnStay = new UnityEvent<Player>();
-        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when an object or player exits contact")] public UnityEvent<Player> OnExit = new UnityEvent<Player>();
-        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when an object or player enters collision")] public UnityEvent<Player> OnCEnter = new UnityEvent<Player>();
-        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when an object or player stays in collision")] public UnityEvent<Player> OnCStay = new UnityEvent<Player>();
-        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when an object or player exits collision")] public UnityEvent<Player> OnCExit = new UnityEvent<Player>();
-        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when a player lands on the object")] public UnityEvent<Player> OnPlayerLand = new UnityEvent<Player>();
-        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when a player stands on the object")] public UnityEvent<Player> OnPlayerStand = new UnityEvent<Player>();
-        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when a player leaves the ground he is standing on")] public UnityEvent<Player> OnPlayerLeaveGround = new UnityEvent<Player>();
+        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when an object or Entity enters contact")] public UnityEvent<Entity> OnEnter = new UnityEvent<Entity>();
+        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when an object or Entity stays in contact")] public UnityEvent<Entity> OnStay = new UnityEvent<Entity>();
+        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when an object or Entity exits contact")] public UnityEvent<Entity> OnExit = new UnityEvent<Entity>();
+        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when an object or Entity enters collision")] public UnityEvent<Entity> OnCEnter = new UnityEvent<Entity>();
+        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when an object or Entity stays in collision")] public UnityEvent<Entity> OnCStay = new UnityEvent<Entity>();
+        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when an object or Entity exits collision")] public UnityEvent<Entity> OnCExit = new UnityEvent<Entity>();
+        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when a Entity lands on the object")] public UnityEvent<Entity> OnEntityLand = new UnityEvent<Entity>();
+        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when a Entity stands on the object")] public UnityEvent<Entity> OnEntityStand = new UnityEvent<Entity>();
+        [ShowIf("ExposeEvents")][Tooltip("Event that triggers when a Entity leaves the ground he is standing on")] public UnityEvent<Entity> OnEntityLeaveGround = new UnityEvent<Entity>();
 
         public Collider Collider;
         public virtual void Awake()
         {
             TOnEnter += (Col) =>
             {
-                if (Col.GetComponentInParent<Player>()) EOnEnter(Col.GetComponentInParent<Player>());
+                if (Col.GetComponentInParent<Entity>()) EOnEnter(Col.GetComponentInParent<Entity>());
             };
 
             TOnStay += (Col) =>
             {
-                if (Col.GetComponentInParent<Player>()) EOnStay(Col.GetComponentInParent<Player>());
+                if (Col.GetComponentInParent<Entity>()) EOnStay(Col.GetComponentInParent<Entity>());
             };
 
             TOnExit += (Col) =>
             {
-                if (Col.GetComponentInParent<Player>()) EOnExit(Col.GetComponentInParent<Player>());
+                if (Col.GetComponentInParent<Entity>()) EOnExit(Col.GetComponentInParent<Entity>());
             };
             COnEnter += (Col) =>
             {
-                if (Col.gameObject.GetComponentInParent<Player>()) EOnCEnter(Col.gameObject.GetComponentInParent<Player>());
+                if (Col.gameObject.GetComponentInParent<Entity>()) EOnCEnter(Col.gameObject.GetComponentInParent<Entity>());
             };
 
             COnStay += (Col) =>
             {
-                if (Col.gameObject.GetComponentInParent<Player>()) EOnCStay(Col.gameObject.GetComponentInParent<Player>());
+                if (Col.gameObject.GetComponentInParent<Entity>()) EOnCStay(Col.gameObject.GetComponentInParent<Entity>());
             };
 
             COnExit += (Col) =>
             {
-                if (Col.gameObject.GetComponentInParent<Player>()) EOnCExit(Col.gameObject.GetComponentInParent<Player>());
+                if (Col.gameObject.GetComponentInParent<Entity>()) EOnCExit(Col.gameObject.GetComponentInParent<Entity>());
             };
 
             Collider = GetComponent<Collider>();
         }
 
-        public virtual void EOnEnter(Player player)
+        public virtual void EOnEnter(Entity Entity)
         {
-            OnEnter.Invoke(player);
+            OnEnter.Invoke(Entity);
         }
-        public virtual void EOnStay(Player player)
+        public virtual void EOnStay(Entity Entity)
         {
-            OnStay.Invoke(player);
+            OnStay.Invoke(Entity);
         }
-        public virtual void EOnExit(Player player)
+        public virtual void EOnExit(Entity Entity)
         {
-            OnExit.Invoke(player);
-        }
-
-
-
-        public virtual void EOnCEnter(Player player)
-        {
-            OnCEnter.Invoke(player);
-        }
-        public virtual void EOnCStay(Player player)
-        {
-            OnCStay.Invoke(player);
-        }
-        public virtual void EOnCExit(Player player)
-        {
-            OnCExit.Invoke(player);
-        }
-        public virtual void EOnPlayerLand(Player player)
-        {
-            OnPlayerLand.Invoke(player);
-        }
-        public virtual void EOnPlayerStand(Player player)
-        {
-            OnPlayerStand.Invoke(player);
+            OnExit.Invoke(Entity);
         }
 
-        public virtual void EOnPlayerLeaveGround(Player player)
+
+
+        public virtual void EOnCEnter(Entity Entity)
         {
-            OnPlayerLeaveGround.Invoke(player);
+            OnCEnter.Invoke(Entity);
+        }
+        public virtual void EOnCStay(Entity Entity)
+        {
+            OnCStay.Invoke(Entity);
+        }
+        public virtual void EOnCExit(Entity Entity)
+        {
+            OnCExit.Invoke(Entity);
+        }
+        public virtual void EOnEntityLand(Entity Entity)
+        {
+            OnEntityLand.Invoke(Entity);
+        }
+        public virtual void EOnEntityStand(Entity Entity)
+        {
+            OnEntityStand.Invoke(Entity);
+        }
+
+        public virtual void EOnEntityLeaveGround(Entity Entity)
+        {
+            OnEntityLeaveGround.Invoke(Entity);
         }
     }
 }

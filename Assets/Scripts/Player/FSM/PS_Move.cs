@@ -31,7 +31,6 @@ namespace Venice
 
         public override void OnFixedUpdate()
         {
-            Debug.Log(MoveInput);
             if (JumpRequested)
             {
                 JumpRequested = false;
@@ -50,7 +49,7 @@ namespace Venice
             }
             if (Player.Attributes.CurrentSpin > 0)
             {
-                Player.Attributes.AddToSpin(Time.fixedDeltaTime * Player.SPINLossRate);
+                //Player.Attributes.AddToSpin(Time.fixedDeltaTime * Player.SPINLossRate);
             }
         }
 
@@ -66,15 +65,12 @@ namespace Venice
             {
                 if (input != Vector3.zero)
                 {
-                    Debug.Log("Accel");
-                    Debug.Log(velocityDirection);
                     if (velocity < PhysicsInfo.MaxSpeed) velocity = Mathf.Min(velocity + PhysicsInfo.Acceleration * Time.fixedDeltaTime, PhysicsInfo.MaxSpeed);
                     velocityDirection = Vector3.Lerp(velocityDirection,
                         input.normalized, PhysicsInfo.TurnRate * PhysicsInfo.TurnRateCurve.Evaluate(velocity) * Time.fixedDeltaTime).normalized;
 
                     //velocity -= Mathf.Abs(Mathf.Sin(Vector3.Angle(velocityDirection, previousVelocityDirection) * Mathf.Deg2Rad)) * PhysicsInfo.SpeedLoss * Time.fixedDeltaTime * PhysicsInfo.SpeedLossCurve.Evaluate(velocity);
 
-                    Debug.Log(velocity);
                     if (Vector3.Dot(velocityDirection, input.normalized) < -0.85f)
                     {
                         isSkidding = true;
@@ -116,8 +112,6 @@ namespace Venice
             }
 
 
-            Debug.Log(isSkidding + "is skidding");
-
             Rb.linearVelocity = velocityDirection * velocity;
 
         }
@@ -141,6 +135,13 @@ namespace Venice
 
         public override void OnUpdate()
         {
+
+
+            if (Input.GetButtonDown("Crouch"))
+            {
+                Debug.Log("Bruih");
+                Player.Attributes.AddToSpin(-25);
+            }
             if (Input.GetButtonDown(GamePreference.JumpButton))
             {
                 JumpRequested = true;

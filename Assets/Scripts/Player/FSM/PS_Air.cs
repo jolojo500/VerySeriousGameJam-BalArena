@@ -20,6 +20,7 @@ public class PS_Air : PlayerState
         if (IsJump)
         {
             CanAscend = true;
+            Visual.ApplySquashAndStretch(1.2f, .2f);
             Visual.Play("Jump");
         }
         base.OnEnter();

@@ -16,7 +16,7 @@ namespace Venice
         public PlayerCollision Collision = new PlayerCollision();
         public Collider PlayerCollider;
         public NeoInputManager InputManager;
-        public PlayerAttributes Attributes = new PlayerAttributes();
+        public BallerinaAttributes Attributes = new BallerinaAttributes();
 
         // Hit Frame Data
         public bool IsInvincible, IsInIF;
@@ -45,6 +45,7 @@ namespace Venice
             Controllers.Init(this);
             Attributes.MaxHealth = 100;
             Attributes.MaxSpin = 100;
+            Attributes.MaxSpotLight = 100;
             Attributes.AddToHealth(Attributes.MaxHealth);
             Attributes.AddToSpin(Attributes.MaxSpin);
         }
@@ -57,7 +58,6 @@ namespace Venice
 
         public void FixedUpdate()
         {
-            BindValues();
             Controllers.FixedUpdate();
         }
 
@@ -139,10 +139,11 @@ namespace Venice
     }
 
     [Serializable]
-    public class PlayerAttributes
+    public class BallerinaAttributes
     {
         public float MaxHealth;
         public float MaxSpin;
+        public float MaxSpotLight;
         public float CurrentHealth
         {
             get;
@@ -154,12 +155,18 @@ namespace Venice
             private set;
         }
 
+        public float CurrentSpotLight
+        {
+            get;
+            private set;
+        }
 
         public bool Grounded = false, Damaged = false;
         public UnityEvent<Tuple<int, int>> OnHealthChanged= new UnityEvent<Tuple<int, int>>();
         public UnityEvent<Tuple<int, int>> OnSpinChanged = new UnityEvent<Tuple<int, int>>();
+        public UnityEvent<Tuple<int, int>> OnSpotLightChanged = new UnityEvent<Tuple<int, int>>();
 
-        public PlayerAttributes()
+        public BallerinaAttributes()
         {
         }
 
@@ -172,8 +179,15 @@ namespace Venice
         {
             CurrentSpin = Mathf.Clamp(CurrentSpin + amount, 0, MaxSpin);
             OnSpinChange((int)CurrentSpin, (int)MaxSpin);
+            Debug.Log(CurrentSpin);
         }
 
+        public void AddToSpotLight(float amount)
+        {
+            CurrentSpotLight = Mathf.Clamp(CurrentSpotLight + amount, 0, MaxSpotLight);
+            OnSpotLightChange((int)CurrentSpotLight, (int)MaxSpotLight);
+            Debug.Log(CurrentSpotLight);
+        }
         public void OnHealthChange(int newHealth, int maxHealth)
         {
             OnHealthChanged?.Invoke( new Tuple<int, int>(newHealth, maxHealth));
@@ -181,6 +195,10 @@ namespace Venice
         public void OnSpinChange(int newESP, int maxESP)
         {
             OnSpinChanged?.Invoke( new Tuple<int, int>(newESP, maxESP));
+        }
+        public void OnSpotLightChange(int newESP, int maxESP)
+        {
+            OnSpotLightChanged?.Invoke(new Tuple<int, int>(newESP, maxESP));
         }
 
     }
