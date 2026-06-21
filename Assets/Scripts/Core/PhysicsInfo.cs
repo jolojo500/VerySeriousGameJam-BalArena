@@ -59,5 +59,7 @@ namespace Venice
         public float FloatDashTurnRateMultiplier = .15f;
         public float FloatDashESPDrainRate = 10f;
 
+        public float AttackDuration = 0.25f;
+        public float AttackLungeSpeed = 18f;
     }
 }

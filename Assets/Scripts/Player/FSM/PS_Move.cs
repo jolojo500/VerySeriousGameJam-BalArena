@@ -146,6 +146,11 @@ namespace Venice
                 JumpRequested = true;
             }
 
+            if (Input.GetButtonDown(GamePreference.AttackButton))
+            {
+                Machine.Set<PS_Attack>();
+            }
+
         }
 
         public override void OnVisualUpdate()

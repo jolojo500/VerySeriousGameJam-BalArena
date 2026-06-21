@@ -44,6 +44,7 @@ namespace Venice
         //Input stuff
         public static string MoveInput = "Move";
         public static string JumpButton = "Jump";
+        public static string AttackButton = "Attack";
         public static string PauseButton = "Pause";
 
 

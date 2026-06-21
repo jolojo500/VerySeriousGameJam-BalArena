@@ -11,6 +11,7 @@ namespace Venice
 
         public static Player Instance { get; private set; }
         public PlayerStateMachine Machine;
+        public AttackHitbox AttackHitbox;
         public PlayerControllers Controllers = new PlayerControllers();
         public PlayerCollision Collision = new PlayerCollision();
         public Collider PlayerCollider;
