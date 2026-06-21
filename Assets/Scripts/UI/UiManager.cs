@@ -5,26 +5,33 @@ using Venice;
 
 public class UIManager : MonoBehaviour
 {
-    public MeterBar SpotBar;
+    public MeterBar SpinBar;       // kick-charge energy
+    public MeterBar SuspicionBar;  // audience suspicion
 
     void Start()
     {
         Player.Instance.Attributes.OnHealthChanged.AddListener(UpdateHealthBar);
         Player.Instance.Attributes.OnSpinChanged.AddListener(UpdateSpinBar);
-        Player.Instance.Attributes.OnSpotLightChanged.AddListener(UpdateSpotBar);
+        Player.Instance.Attributes.OnSuspicionChanged.AddListener(UpdateSuspicionBar);
     }
 
     public void UpdateHealthBar(Tuple<int, int> healthData)
     {
     }
-    
-    public void UpdateSpinBar(Tuple<int, int>psychoData)
-    {
-    }
-    public void UpdateSpotBar(Tuple<int, int> data)
-    {
-        SpotBar.SetMaxAmount(data.Item2);
 
-        SpotBar.SetAmount(data.Item1);
+    public void UpdateSpinBar(Tuple<int, int> data)
+    {
+        UpdateBar(SpinBar, data);
+    }
+    public void UpdateSuspicionBar(Tuple<int, int> data)
+    {
+        UpdateBar(SuspicionBar, data);
+    }
+
+    private void UpdateBar(MeterBar bar, Tuple<int, int> data)
+    {
+        if (bar == null) return;
+        bar.SetMaxAmount(data.Item2);
+        bar.SetAmount(data.Item1);
     }
 }

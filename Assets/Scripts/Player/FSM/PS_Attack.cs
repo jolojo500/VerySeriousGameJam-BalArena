@@ -18,6 +18,7 @@ namespace Venice
         {
             _hitThisSwing.Clear();
             Attributes.Damaged = false;
+            Player.Attributes.AddToSpin(-Player.SpinKickCost);
             Visual.ApplySquashAndStretch(1.1f, .2f);
             _timer = PhysicsInfo.AttackDuration;
 

@@ -8,7 +8,6 @@ public class SpotLightObject : RWorldObject
 
     public void OnEnterIt(Entity entity)
     {
-        Debug.Log("Test");
         entity.Attributes.IsInSpotLight = true;
     }
 
@@ -16,7 +15,6 @@ public class SpotLightObject : RWorldObject
 
     public void OnExitIt(Entity entity)
     {
-
         entity.Attributes.IsInSpotLight = false;
     }
 
@@ -37,6 +35,9 @@ public class SpotLightObject : RWorldObject
     public float pauseChance = 0.3f;
     public Vector2 pauseDuration = new Vector2(1f, 3f);
 
+    [Header("Pose Detection")]
+    public float poseRadius = 3f;
+
     private Vector3 currentVelocity;
     private Vector3 targetPosition;
     public bool paused;
@@ -44,12 +45,29 @@ public class SpotLightObject : RWorldObject
     private void Start()
     {
         PickNewTarget();
-        OnEnter.AddListener(OnEnterIt);
-        OnExit.AddListener(OnExitIt);
+    }
+
+    private void DetectPose()
+    {
+        if (Venice.Player.Instance == null) return;
+
+        Vector3 lightPos = transform.position; lightPos.y = 0f;
+        Vector3 playerPos = Venice.Player.Instance.transform.position; playerPos.y = 0f;
+
+        bool inside = Vector3.Distance(lightPos, playerPos) <= poseRadius;
+
+        if (inside == Venice.Player.Instance.Attributes.IsInSpotLight) return;
+
+        if (inside)
+            OnEnterIt(Venice.Player.Instance);
+        else
+            OnExitIt(Venice.Player.Instance);
     }
 
     private void Update()
     {
+        DetectPose();
+
         if (paused)
             return;
         Vector3 desiredDirection =
@@ -106,5 +124,8 @@ public class SpotLightObject : RWorldObject
 
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(targetPosition, 0.25f);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, poseRadius);
     }
 }

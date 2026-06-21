@@ -137,11 +137,6 @@ namespace Venice
         {
 
 
-            if (Input.GetButtonDown("Crouch"))
-            {
-                Player.Attributes.AddToSpotLight(Random.Range(-3, -1));
-                Machine.Set<PS_Damaged>();
-            }
             if (Input.GetButtonDown(GamePreference.JumpButton))
             {
                 JumpRequested = true;
@@ -149,7 +144,10 @@ namespace Venice
 
             if (Input.GetButtonDown(GamePreference.AttackButton))
             {
-                Machine.Set<PS_Attack>();
+                if (Player.Attributes.CurrentSpin >= Player.SpinKickCost)
+                {
+                    Machine.Set<PS_Attack>();
+                }
             }
 
         }

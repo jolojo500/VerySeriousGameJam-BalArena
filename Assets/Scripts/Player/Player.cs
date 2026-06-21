@@ -25,6 +25,12 @@ namespace Venice
 
         [ReadOnly] public string CurrentState = "";
         public float SPINLossRate = 2;
+
+        [Header("Spotlight / Suspicion")]
+        public float SpinRestoreRate = 30f;   // energy regained per second while posing in the light
+        public float SuspicionCalmRate = 25f; // suspicion lost per second while posing in the light
+        public float SuspicionRiseRate = 5f;  // suspicion gained per second while out of the light
+        public float SpinKickCost = 25f;      // energy spent each time you kick
         public PlayerControllers PlayerControllers = new PlayerControllers();
 
         private void Awake()
@@ -43,10 +49,10 @@ namespace Venice
             PlayerControllers.Init(this);
             Attributes.MaxHealth = 100;
             Attributes.MaxSpin = 100;
-            Attributes.MaxSpotLight = 100;
+            Attributes.MaxSuspicion = 100;
             Attributes.AddToHealth(Attributes.MaxHealth);
             Attributes.AddToSpin(Attributes.MaxSpin);
-            Attributes.AddToSpotLight(0);
+            Attributes.AddToSuspicion(0);
         }
 
         // Start is called before the first frame update
@@ -91,8 +97,14 @@ namespace Venice
 
             if (Attributes.IsInSpotLight)
             {
-                Debug.Log("Test");
-                Attributes.AddToSpotLight(4f * Time.deltaTime);
+                // Posing in the light: restore kick-charge energy and calm the audience.
+                Attributes.AddToSpin(SpinRestoreRate * Time.deltaTime);
+                Attributes.AddToSuspicion(-SuspicionCalmRate * Time.deltaTime);
+            }
+            else
+            {
+                // Out of the light: the audience grows suspicious.
+                Attributes.AddToSuspicion(SuspicionRiseRate * Time.deltaTime);
             }
         }
         public void BlockInput(StageObject stageObject)
@@ -161,20 +173,20 @@ namespace Venice
     {
         public float MaxHealth;
         public float MaxSpin;
-        public float MaxSpotLight;
+        public float MaxSuspicion;
 
         public float CurrentHealth;
 
         public float CurrentSpin;
 
-        public float CurrentSpotLight;
+        public float CurrentSuspicion;
 
 
 
         public bool Grounded = false, Damaged = false, IsInSpotLight = false;
         public UnityEvent<Tuple<int, int>> OnHealthChanged = new UnityEvent<Tuple<int, int>>();
         public UnityEvent<Tuple<int, int>> OnSpinChanged = new UnityEvent<Tuple<int, int>>();
-        public UnityEvent<Tuple<int, int>> OnSpotLightChanged = new UnityEvent<Tuple<int, int>>();
+        public UnityEvent<Tuple<int, int>> OnSuspicionChanged = new UnityEvent<Tuple<int, int>>();
 
 
         public BallerinaAttributes()
@@ -192,10 +204,10 @@ namespace Venice
             OnSpinChange((int)CurrentSpin, (int)MaxSpin);
         }
 
-        public void AddToSpotLight(float amount)
+        public void AddToSuspicion(float amount)
         {
-            CurrentSpotLight = Mathf.Clamp(CurrentSpotLight + amount, 0, MaxSpotLight);
-            OnSpotLightChange((int)CurrentSpotLight, (int)MaxSpotLight);
+            CurrentSuspicion = Mathf.Clamp(CurrentSuspicion + amount, 0, MaxSuspicion);
+            OnSuspicionChange((int)CurrentSuspicion, (int)MaxSuspicion);
         }
         public void OnHealthChange(int newHealth, int maxHealth)
         {
@@ -205,9 +217,9 @@ namespace Venice
         {
             OnSpinChanged?.Invoke(new Tuple<int, int>(newESP, maxESP));
         }
-        public void OnSpotLightChange(int newESP, int maxESP)
+        public void OnSuspicionChange(int newSus, int maxSus)
         {
-            OnSpotLightChanged?.Invoke(new Tuple<int, int>(newESP, maxESP));
+            OnSuspicionChanged?.Invoke(new Tuple<int, int>(newSus, maxSus));
         }
 
     }
