@@ -9,6 +9,7 @@ namespace Venice
     {
         private float _timer;
 
+
         private readonly HashSet<Hittable> _hitThisSwing = new HashSet<Hittable>();
         public PS_Attack() : base(3)
         {
@@ -47,7 +48,6 @@ namespace Venice
             Vector3 center = Transform.position + Vector3.up + Rb.linearVelocity.normalized * 0.3f;
 
             Debug.DrawLine(center, center + Vector3.up * 0.1f, Color.green);
-
             Collider[] hits = Physics.OverlapSphere(
                                 center,
                                 1.5f,
@@ -62,15 +62,16 @@ namespace Venice
                 if (target.transform.IsChildOf(Entity.transform)) continue;
 
                 if (!_hitThisSwing.Add(target)) continue;
-
                 target.Hit(new HitInfo
                 {
                     SourcePosition = Transform.position,
-                    KnockbackForce = 1f,
+                    KnockbackForce = 1f + (.2f * Entity.Controllers.GetController<ComboController>().ComboCount),
                     HitCooldown = .3f,
                     Owner = Entity.gameObject
                 });
+                Entity.Controllers.GetController<ComboController>().ConfirmHit();
             }
+
         }
         public override void OnFixedUpdate()
         {

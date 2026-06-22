@@ -13,6 +13,8 @@ public class MeterBar : MonoBehaviour
     private float max;
     private float amount;
 
+    public bool Animated;
+
     public void SetMaxAmount(int health)
     {
         max = health;
@@ -20,7 +22,7 @@ public class MeterBar : MonoBehaviour
    
     public void SetAmount(int health)
     {
-        if (health < amount)
+        if (health < amount && Animated)
         {
             this.ApplySquashAndStretch(1.1f, .2f);
         }

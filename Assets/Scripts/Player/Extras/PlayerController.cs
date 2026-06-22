@@ -16,16 +16,5 @@ namespace Venice
             Context = player;
         }
 
-
-        public virtual void OnUpdate()
-        {
-
-        }
-
-
-        public virtual void OnFixedUpdate()
-        {
-
-        }
     }
 }

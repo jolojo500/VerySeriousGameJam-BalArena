@@ -44,6 +44,13 @@ public class PS_Air : BallerinaState
         }
         AirMovement();
         AirDrag();
+
+
+        if(Transform.position.y < -5f)
+        {
+            Machine.Set<PS_Death>();
+            return;
+        }
     }
 
     private void AirMovement()

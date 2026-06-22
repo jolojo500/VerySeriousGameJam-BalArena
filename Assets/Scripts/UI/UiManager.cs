@@ -1,15 +1,26 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Venice;
 
 public class UIManager : MonoBehaviour
 {
+
+    public static UIManager Instance { get; private set; }
+
     public MeterBar SpinBar;       // kick-charge energy
     public MeterBar SuspicionBar;  // audience suspicion
+    public TMP_Text ComboCountText;  // audience suspicion
 
     void Start()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        Instance = this;
         Venice.Player.Instance.Attributes.OnHealthChanged.AddListener(UpdateHealthBar);
         Venice.Player.Instance.Attributes.OnSpinChanged.AddListener(UpdateSpinBar);
         Venice.Player.Instance.Attributes.OnSuspicionChanged.AddListener(UpdateSuspicionBar);

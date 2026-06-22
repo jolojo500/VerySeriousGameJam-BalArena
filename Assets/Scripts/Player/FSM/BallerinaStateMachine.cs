@@ -23,6 +23,7 @@ namespace Venice
             Add(new PS_Damaged());
             Add(new PS_Attack());
             Add(new PS_Pose());
+            Add(new PS_Death());
             Initialize<PS_Move>();
         }
 

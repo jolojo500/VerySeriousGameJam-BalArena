@@ -20,11 +20,11 @@ public class StandByState : CPUAIState
     {
         Vector3 dir = (targetPosition - Entity.transform.position);
         dir.y = 0;
-        if(dir.magnitude > 1f){
+        if (dir.magnitude > 1f) {
 
             Debug.Log("Moving");
             FollowerCPU.SetAxis2DValue("Move", dir.normalized.xzy());
-        }else if(dir.magnitude > 0.5f)
+        } else if (dir.magnitude > 0.5f && Entity.HorizontalVelocity.magnitude > 5f)
         {
             FollowerCPU.SetAxis2DValue("Move", -dir.normalized.xzy());
         }

@@ -21,8 +21,6 @@ namespace Venice
         public float SuspicionCalmRate = 25f; // suspicion lost per second while posing in the light
         public float SuspicionRiseRate = 5f;  // suspicion gained per second while out of the light
         
-        public PlayerControllers PlayerControllers = new PlayerControllers();
-
         private void Awake()
         {
             Instance = this;
@@ -33,7 +31,6 @@ namespace Venice
         public override void Init()
         {
             base.Init();
-            PlayerControllers.Init(this);
         }
 
 
@@ -45,16 +42,11 @@ namespace Venice
                 Gizmos.DrawWireSphere((transform.position + Vector3.up) + Rb.linearVelocity.normalized * 0.3f, 1f);
             }
         }
-        public void FixedUpdate()
-        {
-            PlayerControllers.FixedUpdate();
-        }
 
         // Update is called once per frame
         protected override void Update()
         {
             base.Update();
-            PlayerControllers.Update();
 
 
 

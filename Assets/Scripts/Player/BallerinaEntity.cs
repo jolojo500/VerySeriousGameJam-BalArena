@@ -38,6 +38,9 @@ public class BallerinaEntity : Entity
     public BallerinaStateMachine Machine;
 
 
+    public Controllers<BallerinaEntity> Controllers = new Controllers<BallerinaEntity>();
+
+
     public override void Init()
     {
         Collision.BallerinaEntity = this;
@@ -50,6 +53,11 @@ public class BallerinaEntity : Entity
         Attributes.AddToHealth(Attributes.MaxHealth);
         Attributes.AddToSpin(Attributes.MaxSpin);
         Attributes.AddToSuspicion(0);
+        Controllers.AddController(new ComboController());
+        Controllers.Init(this);
+
+
+
         base.Init();
     }
 
@@ -88,6 +96,12 @@ public class BallerinaEntity : Entity
         }
         HandleInvulnerability();
 
+        Controllers.Update();
+
+    }
+    public void FixedUpdate()
+    {
+        Controllers.FixedUpdate();
     }
     public void BlockInput(StageObject stageObject)
     {

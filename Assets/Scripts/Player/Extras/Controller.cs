@@ -10,5 +10,16 @@ namespace Venice
         {
             Context = context;
         }
+
+        public virtual void OnUpdate()
+        {
+
+        }
+
+
+        public virtual void OnFixedUpdate()
+        {
+
+        }
     }
 }

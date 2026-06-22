@@ -15,6 +15,8 @@ namespace Venice
 
         public bool IsDamaged = false;
 
+        int hitCombo = 0;
+        public float lastHitTime = 0f;
         public PS_Damaged()
         {
             StateNumber = 2;
@@ -22,14 +24,28 @@ namespace Venice
 
         public override void OnEnter()
         {
+            if (lastHitTime + 1f > Time.time)
+            {
+                hitCombo++;
+            }
+            else
+            {
+                hitCombo = 1;
+            }
+            lastHitTime = Time.time;
             Attributes.Grounded = true;
             Attributes.Damaged = true;
             Entity.InputManager.BlockInput = true;
             RecoveryTimer = .5f;
+            float kb = (info?.KnockbackForce ?? 5);
+            if(hitCombo == 4)
+            {
+               kb *= 2.5f;
+            }
             Vector3 source = (info == null) ? Transform.position + Vector3.forward:info.SourcePosition;
             Vector3 dir = (Transform.position - source).normalized;
-            Entity.SetHorizontalVelocity(dir * (info?.KnockbackForce ?? 5));
-            Entity.SetVerticalVelocity(Vector3.up * 5f);
+            Entity.SetHorizontalVelocity(dir * kb);
+            Entity.SetVerticalVelocity(Vector3.up * kb/2f);
             IsDamaged = true;
             Visual.Skin.material.SetInt("_Hurted", 1);
             base.OnEnter();
