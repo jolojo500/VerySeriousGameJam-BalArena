@@ -7,11 +7,11 @@ using UnityEngine.Experimental.AI;
 
 namespace Venice
 {
-    public class PlayerVisual : MonoBehaviour
+    public class BallerinaVisual : MonoBehaviour
     {
-        public Player Player;
+        public BallerinaEntity Entity;
         public Animator Animator;
-        public Transform PlayerSkin;
+        public Transform EntitySkin;
         public SpriteRenderer Skin;
 
         // Start is called before the first frame update
@@ -20,21 +20,21 @@ namespace Venice
         }
         public void SkinTransformUpdate()
         {
-            Skin.transform.forward = Player.PlayerCamera.transform.forward;
+            Skin.transform.forward = Camera.main.transform.forward;
         }
         // Update is called once per frame
         private void Update()
         {
             SkinTransformUpdate();
-            SetFloat("GroundSpeed", Mathf.Abs(Player.HorizontalVelocity.magnitude));
-            SetBool("Grounded", Player.Attributes.Grounded);
-            SetBool("Damaged", Player.Attributes.Damaged);
-            SetFloat("XSpeed", Mathf.Abs(Player.XSpeed));
-            SetFloat("YSpeed", Player.YSpeed);
-            SetInteger("State", Player?.Machine?.CurrentState?.StateNumber ?? 0);
+            SetFloat("GroundSpeed", Mathf.Abs(Entity.HorizontalVelocity.magnitude));
+            SetBool("Grounded", Entity.Attributes.Grounded);
+            SetBool("Damaged", Entity.Attributes.Damaged);
+            SetFloat("XSpeed", Mathf.Abs(Entity.XSpeed));
+            SetFloat("YSpeed", Entity.YSpeed);
+            SetInteger("State", Entity?.Machine?.CurrentState?.StateNumber ?? 0);
 
-            if (Player.IsInvulnerable) HandleInvulnerabilityBlink();
-            if (Skin.enabled == false && !Player.IsInvulnerable) Skin.enabled = true;
+            if (Entity.IsInvulnerable) HandleInvulnerabilityBlink();
+            if (Skin.enabled == false && !Entity.IsInvulnerable) Skin.enabled = true;
         }
 
         private void HandleInvulnerabilityBlink()

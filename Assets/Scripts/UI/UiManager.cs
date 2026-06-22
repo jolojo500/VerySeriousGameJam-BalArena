@@ -10,9 +10,9 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        Player.Instance.Attributes.OnHealthChanged.AddListener(UpdateHealthBar);
-        Player.Instance.Attributes.OnSpinChanged.AddListener(UpdateSpinBar);
-        Player.Instance.Attributes.OnSuspicionChanged.AddListener(UpdateSuspicionBar);
+        Venice.Player.Instance.Attributes.OnHealthChanged.AddListener(UpdateHealthBar);
+        Venice.Player.Instance.Attributes.OnSpinChanged.AddListener(UpdateSpinBar);
+        Venice.Player.Instance.Attributes.OnSuspicionChanged.AddListener(UpdateSuspicionBar);
     }
 
     public void UpdateHealthBar(Tuple<int, int> healthData)

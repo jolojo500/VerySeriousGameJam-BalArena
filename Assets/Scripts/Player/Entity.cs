@@ -51,15 +51,12 @@ public class Entity : MonoBehaviour
     public Vector3 VerticalVelocity => Vector3.Project(Rb.linearVelocity, SurfaceNormal == Vector3.zero ? Vector3.up : SurfaceNormal);
 
     public Rigidbody Rb;
-    public PhysicsInfo PhysicsInfo;
-    public BallerinaAttributes Attributes = new BallerinaAttributes();
-
-
 
 
 
     public virtual void Init()
     {
+        Rb = GetComponent<Rigidbody>();
     }
     public void SetHorizontalVelocity(Vector3 newVel)
     {
@@ -76,7 +73,7 @@ public class Entity : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Init();
     }
 
     // Update is called once per frame

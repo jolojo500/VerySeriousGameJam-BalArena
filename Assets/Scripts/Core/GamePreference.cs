@@ -46,6 +46,7 @@ namespace Venice
         public static string JumpButton = "Jump";
         public static string AttackButton = "Attack";
         public static string PauseButton = "Pause";
+        public static string PoseButton = "Pose";
 
 
 

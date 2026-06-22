@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using Venice;
 
-public class PS_Air : PlayerState
+public class PS_Air : BallerinaState
 {
 
     public float Speed;
@@ -24,7 +24,7 @@ public class PS_Air : PlayerState
             Visual.Play("Jump");
         }
         base.OnEnter();
-        Player.SurfaceNormal = Vector3.zero;
+        Entity.SurfaceNormal = Vector3.zero;
     }
 
     public override void OnExit()
@@ -34,7 +34,7 @@ public class PS_Air : PlayerState
 
     public override void OnFixedUpdate()
     {
-        if (Player.YSpeed <= 0)
+        if (Entity.YSpeed <= 0)
         {
             if (Collision.AirGroundCollision())
             {
@@ -105,10 +105,10 @@ public class PS_Air : PlayerState
     {
         if (IsJump && CanAscend)
         {
-            if(Player.YSpeed > PhysicsInfo.JumpCutoff && Input.GetButtonUp(GamePreference.JumpButton))
+            if(Entity.YSpeed > PhysicsInfo.JumpCutoff && Input.GetButtonUp(GamePreference.JumpButton))
             {
                 CanAscend = false;
-                Player.YSpeed = PhysicsInfo.JumpCutoff;
+                Entity.YSpeed = PhysicsInfo.JumpCutoff;
             }
         }
 

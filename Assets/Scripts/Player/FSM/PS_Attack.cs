@@ -5,7 +5,7 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 
 namespace Venice
 {
-    public class PS_Attack : PlayerState
+    public class PS_Attack : BallerinaState
     {
         private float _timer;
 
@@ -18,7 +18,7 @@ namespace Venice
         {
             _hitThisSwing.Clear();
             Attributes.Damaged = false;
-            Player.Attributes.AddToSpin(-Player.SpinKickCost);
+            Entity.Attributes.AddToSpin(-Entity.SpinKickCost);
             Visual.ApplySquashAndStretch(1.1f, .2f);
             _timer = PhysicsInfo.AttackDuration;
 
@@ -27,7 +27,7 @@ namespace Venice
             if(dir == Vector3.zero) dir = Transform.forward;
             dir = dir.normalized;
 
-            Player.SetHorizontalVelocity(dir * PhysicsInfo.AttackLungeSpeed);
+            Entity.SetHorizontalVelocity(dir * PhysicsInfo.AttackLungeSpeed);
 
             base.OnEnter();
         }
@@ -35,9 +35,9 @@ namespace Venice
         public override void OnExit()
         {
 
-            Vector3 flat = Player.HorizontalVelocity;
+            Vector3 flat = Entity.HorizontalVelocity;
             if (flat.magnitude > PhysicsInfo.MaxSpeed)
-                Player.SetHorizontalVelocity(flat.normalized * PhysicsInfo.MaxSpeed);
+                Entity.SetHorizontalVelocity(flat.normalized * PhysicsInfo.MaxSpeed);
 
             base.OnExit();
         }
@@ -59,7 +59,7 @@ namespace Venice
                 var target = hit.GetComponentInParent<Hittable>();
                 if (target == null) continue;
 
-                if (target.transform.IsChildOf(Player.transform)) continue;
+                if (target.transform.IsChildOf(Entity.transform)) continue;
 
                 if (!_hitThisSwing.Add(target)) continue;
 
@@ -68,7 +68,7 @@ namespace Venice
                     SourcePosition = Transform.position,
                     KnockbackForce = 1f,
                     HitCooldown = .3f,
-                    Owner = Player.gameObject
+                    Owner = Entity.gameObject
                 });
             }
         }
@@ -76,9 +76,9 @@ namespace Venice
         {
             base.OnFixedUpdate();
             Collision.GroundCollision();
-            if (Player.HandleFixedTimer(ref _timer))
+            if (Entity.HandleFixedTimer(ref _timer))
             {
-                Player.SetHorizontalVelocity(Player.HorizontalVelocity/3f);
+                Entity.SetHorizontalVelocity(Entity.HorizontalVelocity/3f);
                 Machine.Set<PS_Move>();
             }
         }

@@ -6,31 +6,21 @@ using UnityEngine.Events;
 
 namespace Venice
 {
-    public class Player : PlayerEntity
+    public class Player : BallerinaEntity
     {
 
         public static Player Instance { get; private set; }
-        public PlayerStateMachine Machine;
-        public PlayerCollision Collision = new PlayerCollision();
-        public Collider PlayerCollider;
-        public NeoInputManager InputManager;
 
-        // Hit Frame Data
-        public bool IsInvincible, IsInIF;
-        public float OOCTimer; //Out of control
-        public float IFMaxTime = 5.0f, IFTimer;
-        public InputLockType InputLockType = InputLockType.None;
         public Camera PlayerCamera;
         public Transform FreeLookCamera;
 
-        [ReadOnly] public string CurrentState = "";
         public float SPINLossRate = 2;
 
         [Header("Spotlight / Suspicion")]
         public float SpinRestoreRate = 30f;   // energy regained per second while posing in the light
         public float SuspicionCalmRate = 25f; // suspicion lost per second while posing in the light
         public float SuspicionRiseRate = 5f;  // suspicion gained per second while out of the light
-        public float SpinKickCost = 25f;      // energy spent each time you kick
+        
         public PlayerControllers PlayerControllers = new PlayerControllers();
 
         private void Awake()
@@ -43,27 +33,14 @@ namespace Venice
         public override void Init()
         {
             base.Init();
-            Visual = GetComponentInChildren<PlayerVisual>();
-            Machine = GetComponent<PlayerStateMachine>();
-            Machine.Init();
             PlayerControllers.Init(this);
-            Attributes.MaxHealth = 100;
-            Attributes.MaxSpin = 100;
-            Attributes.MaxSuspicion = 100;
-            Attributes.AddToHealth(Attributes.MaxHealth);
-            Attributes.AddToSpin(Attributes.MaxSpin);
-            Attributes.AddToSuspicion(0);
         }
 
-        // Start is called before the first frame update
-        void Start()
-        {
-            Init();
-        }
+
 
         public void OnDrawGizmos()
         {
-            if (Machine.IsCurrentState<PS_Attack>())
+            if (Machine?.IsCurrentState<PS_Attack>() ?? false)
             {
                 Gizmos.DrawWireSphere((transform.position + Vector3.up) + Rb.linearVelocity.normalized * 0.3f, 1f);
             }
@@ -78,21 +55,7 @@ namespace Venice
         {
             base.Update();
             PlayerControllers.Update();
-            HandleInvulnerability();
-            CurrentState = Machine.CurrentState?.GetType().Name ?? "";
 
-            if (IsInIF)
-            {
-                if (HandleTimer(ref IFTimer))
-                {
-                    IsInIF = false;
-                }
-            }
-
-            if (HandleTimer(ref OOCTimer))
-            {
-                UnlockInputs();
-            }
 
 
             if (Attributes.IsInSpotLight)
@@ -107,65 +70,7 @@ namespace Venice
                 Attributes.AddToSuspicion(SuspicionRiseRate * Time.deltaTime);
             }
         }
-        public void BlockInput(StageObject stageObject)
-        {
-            OOCTimer = stageObject.OutOfControlTime;
-            InputLockType = stageObject.InputLockType;
-            InputManager.BlockInput = true;
-        }
-        public void OnObject(StageObject Obj, bool ToAir)
-        {
-            BlockInput(Obj);
-            if (ToAir)
-            {
-                Machine.Set<PS_Air>();
-            }
-        }
-
-
-
-        public void TriggerDamage(int damage)
-        {
-            //Set Damage state if health > 0 else TriggerDeath();
-            if (!IsInIF)
-            {
-                Attributes.AddToHealth(-Mathf.Abs(damage));
-                if (Attributes.CurrentHealth > 0)
-                {
-                    Invulnerable();
-                    Machine.Set<PS_Damaged>();
-                }
-                else
-                {
-                    TriggerDeath();
-                }
-            }
-        }
-
-        public void OnHit(HitInfo hitInfo)
-        {
-
-            Machine.Get<PS_Damaged>().info = hitInfo;
-            Machine.Set<PS_Damaged>();
-        } 
-        private void TriggerDeath()
-        {
-            Debug.Log("Oh no");
-        }
-
-        private void Invulnerable()
-        {
-            IFTimer = IFMaxTime;
-            IsInIF = true;
-            ToggleInvulnerability(IFMaxTime);
-            HandleInvulnerability();
-        }
-
-        public void UnlockInputs()
-        {
-            InputLockType = InputLockType.None;
-            InputManager.BlockInput = false;
-        }
+       
     }
 
     [Serializable]

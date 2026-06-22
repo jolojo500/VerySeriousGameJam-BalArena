@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class AIStateMachine : StateMachine<CPUAIState>
 {
+    private void Start()
+    {
+        Add(new StandByState());
+        Add(new HostileState());
+        Add(new RunAwayState());
+        Initialize<StandByState>();
+    }
     public override void Add(CPUAIState state)
     {
         base.Add(state);

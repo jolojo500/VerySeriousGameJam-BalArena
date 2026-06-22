@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Venice
 {
 
-    public class PS_Move : PlayerState
+    public class PS_Move : BallerinaState
     {
 
         public bool isSkidding;
@@ -17,9 +17,9 @@ namespace Venice
         {
             Attributes.Grounded = true;
             Attributes.Damaged = false;
-            if(Player.InputLockType == InputLockType.StopOnLand)
+            if(Entity.InputLockType == InputLockType.StopOnLand)
             {
-                Player.UnlockInputs();
+                Entity.UnlockInputs();
             }
             base.OnEnter();
         }
@@ -36,7 +36,7 @@ namespace Venice
                 JumpRequested = false;
                 //SetAirState
                 //Apply Velocity at up;
-                Player.Rb.linearVelocity = Player.HorizontalVelocity + Player.SurfaceNormal * PhysicsInfo.JumpStrength;
+                Entity.Rb.linearVelocity = Entity.HorizontalVelocity + Entity.SurfaceNormal * PhysicsInfo.JumpStrength;
                 Machine.Get<PS_Air>().IsJump = true;
                 Machine.Set<PS_Air>();
                 return;
@@ -47,16 +47,17 @@ namespace Venice
             {
                 Machine.Set<PS_Air>();
             }
-            if (Player.Attributes.CurrentSpin > 0)
+            if (Entity.Attributes.CurrentSpin > 0)
             {
                 //Player.Attributes.AddToSpin(Time.fixedDeltaTime * Player.SPINLossRate);
             }
+
         }
 
         private void GroundMovement()
         {
             var input = CalculatedInputs;
-            Rb.linearVelocity.Split(Player.SurfaceNormal, out Vector3 vLat, out Vector3 vVer);
+            Rb.linearVelocity.Split(Entity.SurfaceNormal, out Vector3 vLat, out Vector3 vVer);
             var previousVelocityDirection = vLat.normalized;
 
             var velocity = vLat.magnitude;
@@ -81,7 +82,7 @@ namespace Venice
                     if (velocity > 0.1f) velocity = Mathf.Max(velocity - PhysicsInfo.Friction * Time.fixedDeltaTime, 0);
                     else
                     {
-                        if (Player.SurfaceNormal.y > 0.8f)
+                        if (Entity.SurfaceNormal.y > 0.8f)
                         {
                             isSkidding = false;
                             velocity = 0;
@@ -122,7 +123,7 @@ namespace Venice
                 PhysicsInfo.SlopeRepelDownHill,
                 1 - (1 + Rb.linearVelocity.normalized.y) / 2);
 
-            if (Player.SurfaceNormal.y < 0.6f)
+            if (Entity.SurfaceNormal.y < 0.6f)
             {
                 Rb.linearVelocity += Vector3.down * slopeRepelTarget * Time.fixedDeltaTime;
             }
@@ -144,10 +145,15 @@ namespace Venice
 
             if (Input.GetButtonDown(GamePreference.AttackButton))
             {
-                if (Player.Attributes.CurrentSpin >= Player.SpinKickCost)
+                if (Entity.Attributes.CurrentSpin >= Entity.SpinKickCost)
                 {
                     Machine.Set<PS_Attack>();
                 }
+            }
+            if (Input.GetButtonDown(GamePreference.PoseButton) && Attributes.IsInSpotLight)
+            {
+                Machine.Set<PS_Pose>();
+                return;
             }
 
         }

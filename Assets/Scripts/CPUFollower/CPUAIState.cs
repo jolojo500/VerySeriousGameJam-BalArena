@@ -1,4 +1,4 @@
-using Rush;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +7,7 @@ public class CPUAIState:State
 {
     public CPUInputManager FollowerCPU;
     public AIStateMachine AIMachine;
-    public TargetInputPosInfo target_inputs => FollowerCPU?.target_inputs;
+    public Entity Entity => FollowerCPU.Entity;
 
     public override void OnEnter()
     {

@@ -8,14 +8,20 @@ public class SpotLightObject : RWorldObject
 
     public void OnEnterIt(Entity entity)
     {
-        entity.Attributes.IsInSpotLight = true;
+        if(entity is Player player)
+        {
+            player.Attributes.IsInSpotLight = true;
+        }
     }
 
 
 
     public void OnExitIt(Entity entity)
     {
-        entity.Attributes.IsInSpotLight = false;
+        if (entity is Player player)
+        {
+            player.Attributes.IsInSpotLight = false;
+        }
     }
 
     [Header("Area")]

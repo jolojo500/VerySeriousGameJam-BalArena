@@ -230,6 +230,35 @@ namespace Venice
                 return false;
             }
         }
+
+        public void SetButtonState(string name, bool isPressed)
+        {
+            var button = UBGet(name, CurrentMap);
+            if (button != null)
+            {
+                button.hold = isPressed;
+                Debug.Log(UBGet(name, CurrentMap).hold);
+            }
+        }
+
+        public void SetAxis1DValue(string name, float value)
+        {
+            var axis1D = UA1Get(name, CurrentMap);
+            if (axis1D != null)
+            {
+                axis1D.Value = value;
+                Debug.Log(UA1Get(name, CurrentMap).Value);
+            }
+        }
+
+        public void SetAxis2DValue(string name, Vector2 value)
+        {
+            var axis2D = UA2Get(name, CurrentMap);
+            if (axis2D != null)
+            {
+                axis2D.Value = value;
+            }
+        }
     }
 
 	public class UAxis1D{
