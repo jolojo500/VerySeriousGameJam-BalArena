@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 public class MusicManager : MonoBehaviour
 {
+    // Call from any script
+    // MusicManager.Instance.PlayActMusic(1);
     public static MusicManager Instance;
     public float fadeTime = 1f;
     [Header("Audio")]
