@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 626bd21bf52aff442b70abee26e3b573, type: 3}
   m_Name: PhysicsInfo
   m_EditorClassIdentifier: Assembly-CSharp::Venice.PhysicsInfo
-  Acceleration: 10
-  Deceleration: 5
-  Friction: 1
-  MaxSpeed: 5
+  Acceleration: 25
+  Deceleration: 100
+  Friction: 80
+  MaxSpeed: 13
   TopSpeed: 10
   SlopeRepelDownHill: 70
   SlopeRepelUpHill: 30
-  TurnRate: 2.6
-  SpeedLoss: 4
+  TurnRate: 6
+  SpeedLoss: 1
   TurnRateCurve:
     serializedVersion: 2
     m_Curve:
@@ -69,7 +69,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  AirAcceleration: 15
+  AirAcceleration: 30
   AirDeceleration: 5
   AirDrag: 3
   JumpAmount: 2
@@ -81,9 +81,9 @@ MonoBehaviour:
   CoyoteTime: 0.15
   FloatAcceleration: 15
   FloatDeceleration: 80
-  FloatDrag: 10
-  MinFloatSpeed: 1
-  MaxFloatSpeed: 6
+  FloatDrag: 1
+  MinFloatSpeed: 0
+  MaxFloatSpeed: 20
   FloatTurnRate: 2.6
   FloatTurnRateCurve:
     serializedVersion: 2
@@ -96,4 +96,4 @@ MonoBehaviour:
   FloatDashTurnRateMultiplier: 0.15
   FloatDashESPDrainRate: 10
   AttackDuration: 0.25
-  AttackLungeSpeed: 12
+  AttackLungeSpeed: 20
