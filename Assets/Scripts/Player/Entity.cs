@@ -6,7 +6,7 @@ using Venice;
 public class Entity : MonoBehaviour
 {
 
-
+    public int FacingDirection = 1;
     public float XSpeed
     {
         get

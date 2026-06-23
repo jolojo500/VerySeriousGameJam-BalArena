@@ -84,7 +84,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 2
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
-  m_Color: {r: 0.4716981, g: 0.25587398, b: 0.25587398, a: 1}
+  m_Color: {r: 1, g: 0.5458693, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -128,9 +128,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 235236974ae274249b5b4b6bfe3d0557, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Venice.PlayerVisual
-  Player: {fileID: 643908506309432580}
+  Entity: {fileID: 643908506309432580}
+  parentObject: {fileID: 9170017081359612761}
   Animator: {fileID: 5548434524134821037}
-  PlayerSkin: {fileID: 4395118274712667889}
+  EntitySkin: {fileID: 4395118274712667889}
   Skin: {fileID: 8585206838097551196}
 --- !u!1 &1774122403226624503
 GameObject:
@@ -394,14 +395,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b238df807af14624098e6ac4d673db14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Venice.Player
+  FacingDirection: 1
   SurfaceNormal: {x: 0, y: 1, z: 0}
   SurfaceAngle: 0
   Rb: {fileID: 1606710105005207856}
+  InputDisableTimer: 0
+  DefinitiveInputLock: 0
+  SpinKickCost: 0
+  CurrentState: 
+  IsInvincible: 0
+  IsInIF: 0
+  OOCTimer: 0
+  IFMaxTime: 5
+  IFTimer: 0
+  InputLockType: 0
   PhysicsInfo: {fileID: 11400000, guid: a9abbf342bb75024fab878508ddfa98d, type: 2}
   Attributes:
     MaxHealth: 0
     MaxSpin: 0
-    MaxSpotLight: 0
+    MaxSuspicion: 0
+    CurrentHealth: 0
+    CurrentSpin: 0
+    CurrentSuspicion: 0
     Grounded: 0
     Damaged: 0
     IsInSpotLight: 0
@@ -411,18 +426,11 @@ MonoBehaviour:
     OnSpinChanged:
       m_PersistentCalls:
         m_Calls: []
-    OnSpotLightChanged:
+    OnSuspicionChanged:
       m_PersistentCalls:
         m_Calls: []
-  Visual: {fileID: 6279532480029286850}
-  InputDisableTimer: 0
-  DefinitiveInputLock: 0
-  Machine: {fileID: 2142831833613286837}
-  AttackHitbox: {fileID: 0}
-  Controllers:
-    Controllers: []
   Collision:
-    Player: {fileID: 643908506309432580}
+    BallerinaEntity: {fileID: 0}
     GroundRayDistance: 0.6
     AirRayDistance: 0.6
     GroundMask:
@@ -431,16 +439,14 @@ MonoBehaviour:
     MaxAngle: 60
   PlayerCollider: {fileID: 5421079334738978663}
   InputManager: {fileID: 8612556736973533563}
-  IsInvincible: 0
-  IsInIF: 0
-  OOCTimer: 0
-  IFMaxTime: 5
-  IFTimer: 0
-  InputLockType: 0
+  Visual: {fileID: 6279532480029286850}
+  Machine: {fileID: 2142831833613286837}
   PlayerCamera: {fileID: 0}
   FreeLookCamera: {fileID: 0}
-  CurrentState: 
   SPINLossRate: 2
+  SpinRestoreRate: 30
+  SuspicionCalmRate: 25
+  SuspicionRiseRate: 5
 --- !u!54 &1606710105005207856
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -463,10 +469,10 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 120
   m_CollisionDetection: 0
 --- !u!114 &2142831833613286837
 MonoBehaviour:
@@ -492,26 +498,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 868d6229006d3dc4789ce9c5027d8e14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Entity
+  FacingDirection: 1
   SurfaceNormal: {x: 0, y: 1, z: 0}
   SurfaceAngle: 0
-  Rb: {fileID: 0}
-  PhysicsInfo: {fileID: 0}
-  Attributes:
-    MaxHealth: 0
-    MaxSpin: 0
-    MaxSpotLight: 0
-    Grounded: 0
-    Damaged: 0
-    IsInSpotLight: 0
-    OnHealthChanged:
-      m_PersistentCalls:
-        m_Calls: []
-    OnSpinChanged:
-      m_PersistentCalls:
-        m_Calls: []
-    OnSpotLightChanged:
-      m_PersistentCalls:
-        m_Calls: []
+  Rb: {fileID: 1606710105005207856}
 --- !u!1 &6278937050392317900
 GameObject:
   m_ObjectHideFlags: 0

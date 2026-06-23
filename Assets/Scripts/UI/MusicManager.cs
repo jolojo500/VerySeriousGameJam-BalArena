@@ -25,11 +25,6 @@ public class MusicManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        PlayActMusic(1);
-    }
-
     public void PlayActMusic(int n)
     {
         StartCoroutine(SwapMusic(music[n], 0.5f));

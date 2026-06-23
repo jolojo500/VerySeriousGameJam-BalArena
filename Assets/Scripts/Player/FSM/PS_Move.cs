@@ -113,7 +113,7 @@ namespace Venice
             }
 
 
-            Rb.linearVelocity = velocityDirection * velocity;
+            Rb.linearVelocity = new Vector3(velocityDirection.x * velocity,velocityDirection.y * velocity,0f);
 
         }
         public void SlopeRepel()

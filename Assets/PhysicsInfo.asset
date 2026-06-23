@@ -15,7 +15,7 @@ MonoBehaviour:
   Acceleration: 25
   Deceleration: 100
   Friction: 80
-  MaxSpeed: 13
+  MaxSpeed: 7
   TopSpeed: 10
   SlopeRepelDownHill: 70
   SlopeRepelUpHill: 30

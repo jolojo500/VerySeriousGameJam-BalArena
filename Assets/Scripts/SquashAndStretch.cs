@@ -10,7 +10,7 @@ public static class SquashAndStretch
     }
     public static IEnumerator DoSquashAndStretch(MonoBehaviour obj, float scale, float time)
     {
-        obj.transform.localScale = Vector3.one; // Reset scale to original before starting the squash and stretch effect
+       
         Vector3 originalScale = obj.transform.localScale;
         // Define the squash scale (decrease y, increase x and z)
         Vector3 squashScale = new Vector3(originalScale.x * scale, originalScale.y / scale, originalScale.z * scale);
