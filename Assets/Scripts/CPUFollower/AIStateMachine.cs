@@ -13,7 +13,6 @@ public class AIStateMachine : StateMachine<CPUAIState>
     [Header("Aggro")]
     public bool IsAggressive { get; private set; }
     public bool AlertAllBallerinasOnHit = true;
-    public float SuspicionOnAggro = 10f;
 
     [Header("Wandering")]
     public float ArenaRange = 13f;
@@ -39,6 +38,11 @@ public class AIStateMachine : StateMachine<CPUAIState>
     public float DashImpulse = 7f;
     public float DashStartMaxDistance = 8f;
     public float DashAttackButtonTime = 0.15f;
+    public float DashWindUpDuration = 1.0f;
+    public float DashRecoveryDuration = 0.65f;
+    public float WindUpTurnSpeed = 8f;
+    public string WindUpBoolName = "ChargingAttack";
+    public string AttackTriggerName = "Attack";
 
     [Header("Direct Player Push")]
     public bool DirectlyPushPlayerOnDash = true;
@@ -122,11 +126,6 @@ public class AIStateMachine : StateMachine<CPUAIState>
             return;
 
         IsAggressive = true;
-
-        if (!fromAlly && Player.Instance != null)
-        {
-            Player.Instance.Attributes.AddToSuspicion(SuspicionOnAggro);
-        }
 
         Set<HostileState>();
     }

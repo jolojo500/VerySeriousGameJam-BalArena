@@ -10,7 +10,6 @@ public class BallerinaEntity : Entity
     public bool IsDead { get; private set; }
 
     [Header("Death")]
-    public float SuspicionOnDeath = 25f;
     public string DeathTriggerName = "Death";
     public string DeadBoolName = "Dead";
     public Collider[] CollidersToDisableOnDeath;
@@ -44,6 +43,10 @@ public class BallerinaEntity : Entity
     public BallerinaVisual Visual;
     public BallerinaStateMachine Machine;
 
+    [Header("Hit Launch")]
+    public float HitLaunchHorizontalMultiplier = 1f;
+    public float HitLaunchUpMultiplier = 0.35f;
+    public float MaxHitLaunchSpeed = 15f;
 
     public Controllers<BallerinaEntity> Controllers = new Controllers<BallerinaEntity>();
 
@@ -168,6 +171,8 @@ public class BallerinaEntity : Entity
 
     public virtual void OnHit(HitInfo hitInfo)
     {
+        GetComponent<AIStateMachine>()?.AlertFromHit();
+
         if (IsDead || IsInvincible || IsInIF)
             return;
 
@@ -175,15 +180,19 @@ public class BallerinaEntity : Entity
         if (damagedState != null)
             damagedState.info = hitInfo;
 
-        // If HitInfo has its own damage value, use that instead.
+        ApplyHitLaunch(hitInfo);
+
         TriggerDamage(1);
     }
 
-    private void TriggerDeath()
+    public void TriggerDeath()
     {
         if (IsDead)
             return;
-
+        if (!(this is Player))
+        {
+            WaveManager.Instance.EnemyKilled();
+        }
         IsDead = true;
 
         IsInIF = false;
@@ -226,11 +235,6 @@ public class BallerinaEntity : Entity
         Visual?.SetBool(DeadBoolName, true);
         Visual?.SetTrigger(DeathTriggerName);
 
-        if (!(this is Player) && Player.Instance != null)
-        {
-            Player.Instance.Attributes.AddToSuspicion(SuspicionOnDeath);
-        }
-
         Debug.Log($"{name} died.");
     }
 
@@ -268,5 +272,29 @@ public class BallerinaEntity : Entity
 
         InputDisableTimer = time;
         //LockInput
+    }
+    private void ApplyHitLaunch(HitInfo hitInfo)
+    {
+        if (Rb == null)
+            return;
+
+        Vector3 launchDirection = transform.position - hitInfo.SourcePosition;
+        launchDirection.y = 0f;
+
+        if (launchDirection.sqrMagnitude < 0.001f)
+            launchDirection = -transform.forward;
+
+        launchDirection.Normalize();
+
+        float force = hitInfo.KnockbackForce;
+
+        Vector3 launchVelocity =
+            launchDirection * force * HitLaunchHorizontalMultiplier +
+            Vector3.up * force * HitLaunchUpMultiplier;
+
+        Rb.linearVelocity = Vector3.ClampMagnitude(
+            Rb.linearVelocity + launchVelocity,
+            MaxHitLaunchSpeed
+        );
     }
 }

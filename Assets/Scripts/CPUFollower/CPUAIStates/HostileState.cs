@@ -3,11 +3,22 @@ using Venice;
 
 public class HostileState : CPUAIState
 {
+    private enum AttackPhase
+    {
+        Chasing,
+        WindUp,
+        Dashing,
+        Recovery
+    }
+
+    private AttackPhase phase;
+
     private float dashCooldownTimer;
+    private float windUpTimer;
     private float dashTimer;
     private float attackButtonTimer;
-    private float strafeSwitchTimer;
-    private int strafeDirection;
+    private float recoveryTimer;
+
     private Vector3 dashDirection;
     private bool pushedPlayerThisDash;
 
@@ -15,12 +26,14 @@ public class HostileState : CPUAIState
     {
         base.OnEnter();
 
+        phase = AttackPhase.Chasing;
+
         dashCooldownTimer = Random.Range(0.5f, 1.2f);
+        windUpTimer = 0f;
         dashTimer = 0f;
         attackButtonTimer = 0f;
+        recoveryTimer = 0f;
         pushedPlayerThisDash = false;
-
-        PickStrafeDirection();
 
         Debug.Log("Entering Hostile State");
     }
@@ -36,71 +49,107 @@ public class HostileState : CPUAIState
             return;
         }
 
-        Vector3 toPlayer = Player.Instance.transform.position - Entity.transform.position;
-        toPlayer.y = 0f;
+        switch (phase)
+        {
+            case AttackPhase.Chasing:
+                UpdateChasing();
+                break;
 
-        float distanceToPlayer = toPlayer.magnitude;
+            case AttackPhase.WindUp:
+                UpdateWindUp();
+                break;
+
+            case AttackPhase.Dashing:
+                UpdateDash();
+                break;
+
+            case AttackPhase.Recovery:
+                UpdateRecovery();
+                break;
+        }
+    }
+
+    private void UpdateChasing()
+    {
+        Vector3 toPlayer = GetDirectionToPlayer(out float distanceToPlayer);
 
         if (distanceToPlayer <= 0.001f)
             return;
 
-        Vector3 playerDirection = toPlayer.normalized;
-        Vector3 separation = AIMachine.GetSeparationVector() * AIMachine.AggressiveSeparationWeight;
-
-        if (dashTimer > 0f)
-        {
-            UpdateDash(separation);
-            return;
-        }
-
         dashCooldownTimer -= Time.deltaTime;
 
-        if (dashCooldownTimer <= 0f && distanceToPlayer <= AIMachine.DashStartMaxDistance)
+        bool canAttack = dashCooldownTimer <= 0f;
+        bool closeEnough = distanceToPlayer <= AIMachine.DashStartMaxDistance;
+
+        if (canAttack && closeEnough)
         {
-            StartDash(playerDirection);
+            StartWindUp(toPlayer);
             return;
         }
 
-        UpdateNormalHostileMovement(playerDirection, distanceToPlayer, separation);
-    }
-
-    private void UpdateNormalHostileMovement(Vector3 playerDirection, float distanceToPlayer, Vector3 separation)
-    {
-        strafeSwitchTimer -= Time.deltaTime;
-
-        if (strafeSwitchTimer <= 0f)
-            PickStrafeDirection();
+        Vector3 separation = AIMachine.GetSeparationVector() * AIMachine.AggressiveSeparationWeight;
 
         Vector3 moveDirection = Vector3.zero;
 
-        float preferred = AIMachine.PreferredPlayerDistance;
-        float buffer = AIMachine.PreferredDistanceBuffer;
-
-        if (distanceToPlayer > preferred + buffer)
-        {
-            moveDirection += playerDirection;
-        }
-        else if (distanceToPlayer < preferred - buffer)
-        {
-            moveDirection -= playerDirection;
-        }
+        if (distanceToPlayer > 1.5f)
+            moveDirection += toPlayer;
         else
-        {
-            Vector3 strafe = Vector3.Cross(Vector3.up, playerDirection).normalized;
-            moveDirection += strafe * strafeDirection * AIMachine.StrafeWeight;
-        }
+            moveDirection -= toPlayer * 0.5f;
 
-        moveDirection += separation;
+        moveDirection += separation * 0.5f;
 
         FollowerCPU.SetAxis2DValue("Move", AIMachine.WorldDirectionToMoveInput(moveDirection));
         FollowerCPU.SetButtonState("Attack", false);
     }
 
-    private void StartDash(Vector3 direction)
+    private void StartWindUp(Vector3 directionToPlayer)
     {
-        dashDirection = direction;
-        dashTimer = AIMachine.DashDuration;
-        attackButtonTimer = AIMachine.DashAttackButtonTime;
+        phase = AttackPhase.WindUp;
+
+        dashDirection = directionToPlayer.normalized;
+        windUpTimer = AIMachine.DashWindUpDuration;
+        pushedPlayerThisDash = false;
+
+        FollowerCPU.SetAxis2DValue("Move", Vector2.zero);
+        FollowerCPU.SetButtonState("Attack", false);
+
+        BallerinaEntity ballerina = Entity as BallerinaEntity;
+
+        if (ballerina != null && ballerina.Visual != null)
+        {
+            ballerina.Visual.SetBool(AIMachine.WindUpBoolName, true);
+        }
+
+        Debug.Log("AI WINDING UP ATTACK");
+    }
+
+    private void UpdateWindUp()
+    {
+        Vector3 toPlayer = GetDirectionToPlayer(out float distanceToPlayer);
+
+        if (distanceToPlayer > 0.001f)
+            dashDirection = Vector3.Lerp(dashDirection, toPlayer, Time.deltaTime * AIMachine.WindUpTurnSpeed).normalized;
+
+        windUpTimer -= Time.deltaTime;
+
+        // Stay still during wind-up so the player can read it.
+        FollowerCPU.SetAxis2DValue("Move", Vector2.zero);
+        FollowerCPU.SetButtonState("Attack", false);
+
+        if (windUpTimer <= 0f)
+        {
+            StartDash();
+        }
+    }
+
+    private void StartDash()
+    {
+        phase = AttackPhase.Dashing;
+
+        Debug.Log("AI STARTING ATTACK DASH");
+
+        dashTimer = Mathf.Max(0.25f, AIMachine.DashDuration);
+        attackButtonTimer = Mathf.Max(0.12f, AIMachine.DashAttackButtonTime);
         pushedPlayerThisDash = false;
 
         dashCooldownTimer = Random.Range(
@@ -108,39 +157,66 @@ public class HostileState : CPUAIState
             AIMachine.DashCooldownMax
         );
 
-        if (Entity.Rb != null)
+        BallerinaEntity ballerina = Entity as BallerinaEntity;
+
+        if (ballerina != null && ballerina.Visual != null)
         {
-            Entity.Rb.AddForce(dashDirection * AIMachine.DashImpulse, ForceMode.Impulse);
+            ballerina.Visual.SetBool(AIMachine.WindUpBoolName, false);
+            ballerina.Visual.SetTrigger(AIMachine.AttackTriggerName);
         }
 
         FollowerCPU.SetAxis2DValue("Move", AIMachine.WorldDirectionToMoveInput(dashDirection));
         FollowerCPU.SetButtonState("Attack", true);
+
+        ForceDashVelocity();
     }
 
-    private void UpdateDash(Vector3 separation)
+    private void UpdateDash()
     {
         dashTimer -= Time.deltaTime;
         attackButtonTimer -= Time.deltaTime;
 
-        Vector3 moveDirection = dashDirection + separation * 0.35f;
-
-        FollowerCPU.SetAxis2DValue("Move", AIMachine.WorldDirectionToMoveInput(moveDirection));
+        FollowerCPU.SetAxis2DValue("Move", AIMachine.WorldDirectionToMoveInput(dashDirection));
         FollowerCPU.SetButtonState("Attack", attackButtonTimer > 0f);
 
+        ForceDashVelocity();
         TryPushPlayer();
 
         if (dashTimer <= 0f)
         {
             FollowerCPU.SetAxis2DValue("Move", Vector2.zero);
             FollowerCPU.SetButtonState("Attack", false);
+
+            phase = AttackPhase.Recovery;
+            recoveryTimer = AIMachine.DashRecoveryDuration;
         }
+    }
+
+    private void UpdateRecovery()
+    {
+        recoveryTimer -= Time.deltaTime;
+
+        FollowerCPU.SetAxis2DValue("Move", Vector2.zero);
+        FollowerCPU.SetButtonState("Attack", false);
+
+        if (recoveryTimer <= 0f)
+        {
+            phase = AttackPhase.Chasing;
+        }
+    }
+
+    private void ForceDashVelocity()
+    {
+        if (Entity == null || Entity.Rb == null)
+            return;
+
+        float lungeSpeed = AIMachine.DashImpulse;
+
+        Entity.SetHorizontalVelocity(dashDirection * lungeSpeed);
     }
 
     private void TryPushPlayer()
     {
-        if (!AIMachine.DirectlyPushPlayerOnDash)
-            return;
-
         if (pushedPlayerThisDash)
             return;
 
@@ -150,10 +226,22 @@ public class HostileState : CPUAIState
         Vector3 toPlayer = Player.Instance.transform.position - Entity.transform.position;
         toPlayer.y = 0f;
 
-        if (toPlayer.magnitude > AIMachine.DashPushRadius)
+        float distance = toPlayer.magnitude;
+
+        if (distance > AIMachine.DashPushRadius)
+            return;
+
+        if (distance <= 0.001f)
             return;
 
         Vector3 pushDirection = toPlayer.normalized;
+
+        float facingDot = Vector3.Dot(dashDirection.normalized, pushDirection);
+
+        if (facingDot < 0.25f)
+            return;
+
+        Player.Instance.TriggerDamage(1);
 
         Player.Instance.Rb.AddForce(
             pushDirection * AIMachine.DashPushForce + Vector3.up * AIMachine.DashPushUpForce,
@@ -161,17 +249,33 @@ public class HostileState : CPUAIState
         );
 
         pushedPlayerThisDash = true;
+
+        Debug.Log("AI dash hit and pushed player.");
     }
 
-    private void PickStrafeDirection()
+    private Vector3 GetDirectionToPlayer(out float distance)
     {
-        strafeDirection = Random.value < 0.5f ? -1 : 1;
-        strafeSwitchTimer = Random.Range(1.2f, 2.5f);
+        Vector3 toPlayer = Player.Instance.transform.position - Entity.transform.position;
+        toPlayer.y = 0f;
+
+        distance = toPlayer.magnitude;
+
+        if (distance <= 0.001f)
+            return Vector3.zero;
+
+        return toPlayer.normalized;
     }
 
     public override void OnExit()
     {
         base.OnExit();
+
+        BallerinaEntity ballerina = Entity as BallerinaEntity;
+
+        if (ballerina != null && ballerina.Visual != null)
+        {
+            ballerina.Visual.SetBool(AIMachine.WindUpBoolName, false);
+        }
 
         FollowerCPU.SetAxis2DValue("Move", Vector2.zero);
         FollowerCPU.SetButtonState("Attack", false);

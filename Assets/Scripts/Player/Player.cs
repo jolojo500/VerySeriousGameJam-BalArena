@@ -15,11 +15,6 @@ namespace Venice
         public Transform FreeLookCamera;
 
         public float SPINLossRate = 2;
-
-        [Header("Spotlight / Suspicion")]
-        public float SpinRestoreRate = 30f;   // energy regained per second while posing in the light
-        public float SuspicionCalmRate = 25f; // suspicion lost per second while posing in the light
-        public float SuspicionRiseRate = 5f;  // suspicion gained per second while out of the light
         
         private void Awake()
         {
@@ -47,20 +42,6 @@ namespace Venice
         protected override void Update()
         {
             base.Update();
-
-
-
-            if (Attributes.IsInSpotLight)
-            {
-                // Posing in the light: restore kick-charge energy and calm the audience.
-                Attributes.AddToSpin(SpinRestoreRate * Time.deltaTime);
-                Attributes.AddToSuspicion(-SuspicionCalmRate * Time.deltaTime);
-            }
-            else
-            {
-                // Out of the light: the audience grows suspicious.
-                Attributes.AddToSuspicion(SuspicionRiseRate * Time.deltaTime);
-            }
         }
        
     }
