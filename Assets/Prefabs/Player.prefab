@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8585206838097551196}
   - component: {fileID: 5548434524134821037}
   - component: {fileID: 6279532480029286850}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Graphic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 559812305086597515}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 1.66, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -83,9 +83,9 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 2
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
-  m_Color: {r: 1, g: 0.5458693, b: 0, a: 1}
-  m_FlipX: 0
+  m_Sprite: {fileID: 1490209349, guid: 558a5160840ca8d40be40aa5c15cb719, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 2}
@@ -104,7 +104,7 @@ Animator:
   m_GameObject: {fileID: 559812305086597515}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a3413079ced09dd4fa805e160beb59f6, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -143,7 +143,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7797915921424391426}
   - component: {fileID: 5421079334738978663}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -185,9 +185,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 1
+  m_Height: 0.88239676
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.15636334, z: 0}
 --- !u!1 &2067059740337672315
 GameObject:
   m_ObjectHideFlags: 0
@@ -199,7 +199,7 @@ GameObject:
   - component: {fileID: 5128786773280076600}
   - component: {fileID: 8612556736973533563}
   - component: {fileID: 4347549567259730061}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Inputs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -215,7 +215,7 @@ Transform:
   m_GameObject: {fileID: 2067059740337672315}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.91, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -357,7 +357,7 @@ GameObject:
   - component: {fileID: 1606710105005207856}
   - component: {fileID: 2142831833613286837}
   - component: {fileID: 8692708887997111992}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -398,6 +398,11 @@ MonoBehaviour:
   SurfaceNormal: {x: 0, y: 1, z: 0}
   SurfaceAngle: 0
   Rb: {fileID: 1606710105005207856}
+  SuspicionOnDeath: 25
+  DeathTriggerName: Death
+  DeadBoolName: Dead
+  CollidersToDisableOnDeath: []
+  FreezeRigidbodyOnDeath: 1
   InputDisableTimer: 0
   DefinitiveInputLock: 0
   SpinKickCost: 0
@@ -429,7 +434,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   Collision:
-    BallerinaEntity: {fileID: 0}
+    BallerinaEntity: {fileID: 643908506309432580}
     GroundRayDistance: 0.6
     AirRayDistance: 0.6
     GroundMask:

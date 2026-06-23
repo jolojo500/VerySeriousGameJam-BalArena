@@ -1,9 +1,9 @@
 using UnityEngine;
-using Venice;
 
 public class StandByState : CPUAIState
 {
     private Vector3 targetPosition;
+    private float retargetTimer;
 
     public override void OnEnter()
     {
@@ -14,49 +14,56 @@ public class StandByState : CPUAIState
 
     public override void OnUpdate()
     {
-        if (Player.Instance == null || Entity == null)
+        if (Entity == null)
             return;
 
-        Vector3 toPlayer = Player.Instance.transform.position - Entity.transform.position;
-        toPlayer.y = 0f;
-
-        bool playerClose = toPlayer.magnitude <= AIMachine.HostileDistance;
-        bool suspicionHigh = Player.Instance.Attributes.CurrentSuspicion >= AIMachine.SuspicionHostileThreshold;
-
-        if (playerClose || suspicionHigh)
+        if (AIMachine.IsAggressive)
         {
             AIMachine.Set<HostileState>();
             return;
         }
 
-        Vector3 dir = targetPosition - Entity.transform.position;
-        dir.y = 0f;
+        retargetTimer -= Time.deltaTime;
 
-        if (dir.magnitude > 1f)
+        Vector3 toTarget = targetPosition - Entity.transform.position;
+        toTarget.y = 0f;
+
+        bool reachedTarget = toTarget.magnitude <= AIMachine.WanderPointReachedDistance;
+        bool retargetTimeExpired = retargetTimer <= 0f;
+
+        if (reachedTarget || retargetTimeExpired)
         {
-            Vector2 moveInput = new Vector2(dir.normalized.x, dir.normalized.z);
-            FollowerCPU.SetAxis2DValue("Move", moveInput);
-        }
-        else
-        {
-            FollowerCPU.SetAxis2DValue("Move", Vector2.zero);
             PickNewTarget();
+            toTarget = targetPosition - Entity.transform.position;
+            toTarget.y = 0f;
         }
+
+        Vector3 separation = AIMachine.GetSeparationVector() * AIMachine.WanderSeparationWeight;
+
+        Vector3 moveDirection = Vector3.zero;
+
+        if (toTarget.magnitude > AIMachine.WanderPointReachedDistance)
+            moveDirection += toTarget.normalized;
+
+        moveDirection += separation;
+
+        FollowerCPU.SetAxis2DValue("Move", AIMachine.WorldDirectionToMoveInput(moveDirection));
+        FollowerCPU.SetButtonState("Attack", false);
     }
 
     private void PickNewTarget()
     {
-        targetPosition = new Vector3(
-            Random.Range(-13f, 13f),
-            0f,
-            Random.Range(-13f, 13f)
+        targetPosition = AIMachine.GetRandomWanderPoint();
+        retargetTimer = Random.Range(
+            AIMachine.WanderRetargetMinTime,
+            AIMachine.WanderRetargetMaxTime
         );
     }
 
     public override void OnExit()
     {
         base.OnExit();
-        Debug.Log("Exiting StandBy State");
         FollowerCPU.SetAxis2DValue("Move", Vector2.zero);
+        FollowerCPU.SetButtonState("Attack", false);
     }
 }

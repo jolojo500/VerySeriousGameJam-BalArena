@@ -51,7 +51,7 @@ namespace Venice
         {
             if (Animator)
             {
-                Animator.SetTrigger(name);
+                Animator?.SetTrigger(name);
             }
         }
 
