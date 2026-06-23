@@ -3,39 +3,56 @@ using Venice;
 
 public class HostileState : CPUAIState
 {
-    Vector3 targetPosition;
-    public HostileState()
-    {
-    }
+    private float attackTimer;
 
     public override void OnEnter()
     {
         base.OnEnter();
+        attackTimer = 0f;
         Debug.Log("Entering Hostile State");
-        targetPosition = Player.Instance.transform.position;
-
     }
 
     public override void OnUpdate()
     {
+        if (Player.Instance == null || Entity == null)
+            return;
+
+        Vector3 dir = Player.Instance.transform.position - Entity.transform.position;
+        dir.y = 0f;
+
+        float distance = dir.magnitude;
+
         FollowerCPU.SetButtonState("Attack", false);
-        Vector3 dir = (targetPosition - Entity.transform.position);
-        dir.y = 0;
-        if (dir.magnitude > .5f)
+
+        if (distance > AIMachine.LoseDistance)
         {
-            FollowerCPU.SetAxis2DValue("Move", dir.normalized);
+            AIMachine.Set<StandByState>();
+            return;
         }
-        else
+
+        if (distance > AIMachine.AttackDistance)
+        {
+            Vector2 moveInput = new Vector2(dir.normalized.x, dir.normalized.z);
+            FollowerCPU.SetAxis2DValue("Move", moveInput);
+            return;
+        }
+
+        FollowerCPU.SetAxis2DValue("Move", Vector2.zero);
+
+        attackTimer -= Time.deltaTime;
+
+        if (attackTimer <= 0f)
         {
             FollowerCPU.SetButtonState("Attack", true);
+            attackTimer = AIMachine.AttackCooldown;
         }
     }
 
     public override void OnExit()
     {
         base.OnExit();
-        Debug.Log("Exiting StandBy State");
-        FollowerCPU.SetAxis2DValue("Move", Vector3.zero);
+        Debug.Log("Exiting Hostile State");
+        FollowerCPU.SetAxis2DValue("Move", Vector2.zero);
         FollowerCPU.SetButtonState("Attack", false);
     }
 }

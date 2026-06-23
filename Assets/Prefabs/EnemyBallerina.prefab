@@ -54,6 +54,11 @@ MonoBehaviour:
   SurfaceNormal: {x: 0, y: 1, z: 0}
   SurfaceAngle: 0
   Rb: {fileID: 4453766238006023159}
+  SuspicionOnDeath: 25
+  DeathTriggerName: Death
+  DeadBoolName: Dead
+  CollidersToDisableOnDeath: []
+  FreezeRigidbodyOnDeath: 1
   InputDisableTimer: 0
   DefinitiveInputLock: 0
   SpinKickCost: 25
@@ -431,3 +436,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f929cb02b8c904f4987cdd8135fd79b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AIStateMachine
+  HostileDistance: 7
+  AttackDistance: 1.2
+  LoseDistance: 12
+  AttackCooldown: 1
+  SuspicionHostileThreshold: 60
+  ControlledEntity: {fileID: 4000352510935394700}

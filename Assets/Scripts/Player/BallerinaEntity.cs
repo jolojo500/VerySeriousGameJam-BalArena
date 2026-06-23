@@ -6,8 +6,15 @@ using Venice;
 
 public class BallerinaEntity : Entity
 {
-    
 
+    public bool IsDead { get; private set; }
+
+    [Header("Death")]
+    public float SuspicionOnDeath = 25f;
+    public string DeathTriggerName = "Death";
+    public string DeadBoolName = "Dead";
+    public Collider[] CollidersToDisableOnDeath;
+    public bool FreezeRigidbodyOnDeath = true;
     public bool IsInvulnerable => _invulnerabilityTimer > 0f;
 
     public float InputDisableTimer = 0f;
@@ -43,22 +50,31 @@ public class BallerinaEntity : Entity
 
     public override void Init()
     {
+        base.Init(); // Important: initialize Rb first
+
         Collision.BallerinaEntity = this;
+
+        if (InputManager == null)
+            InputManager = GetComponent<NeoInputManager>();
+
         Visual = GetComponentInChildren<BallerinaVisual>();
+        if (Visual != null)
+            Visual.Entity = this;
+
         Machine = GetComponent<BallerinaStateMachine>();
-        Machine.Init();
-        Attributes.MaxHealth = 100;
+        if (Machine != null)
+            Machine.Init();
+
+        Attributes.MaxHealth = 3;
         Attributes.MaxSpin = 100;
         Attributes.MaxSuspicion = 100;
+
         Attributes.AddToHealth(Attributes.MaxHealth);
         Attributes.AddToSpin(Attributes.MaxSpin);
         Attributes.AddToSuspicion(0);
+
         Controllers.AddController(new ComboController());
         Controllers.Init(this);
-
-
-
-        base.Init();
     }
 
     public void ToggleInvulnerability(float v)
@@ -80,7 +96,13 @@ public class BallerinaEntity : Entity
 
     protected override void Update()
     {
-        CurrentState = Machine.CurrentState?.GetType().Name ?? "";
+        if (IsDead)
+        {
+            CurrentState = "Dead";
+            return;
+        }
+
+        CurrentState = Machine?.CurrentState?.GetType().Name ?? "";
 
         if (IsInIF)
         {
@@ -94,13 +116,16 @@ public class BallerinaEntity : Entity
         {
             UnlockInputs();
         }
+
         HandleInvulnerability();
-
         Controllers.Update();
-
     }
+
     public void FixedUpdate()
     {
+        if (IsDead)
+            return;
+
         Controllers.FixedUpdate();
     }
     public void BlockInput(StageObject stageObject)
@@ -122,32 +147,91 @@ public class BallerinaEntity : Entity
 
     public void TriggerDamage(int damage)
     {
-        //Set Damage state if health > 0 else TriggerDeath();
-        if (!IsInIF)
+        if (IsDead || IsInvincible || IsInIF)
+            return;
+
+        int finalDamage = Mathf.Max(1, Mathf.Abs(damage));
+
+        Attributes.AddToHealth(-finalDamage);
+
+        Debug.Log($"{name} took {finalDamage} damage. HP: {Attributes.CurrentHealth}/{Attributes.MaxHealth}");
+
+        if (Attributes.CurrentHealth <= 0)
         {
-            Attributes.AddToHealth(-Mathf.Abs(damage));
-            if (Attributes.CurrentHealth > 0)
-            {
-                Invulnerable();
-                Machine.Set<PS_Damaged>();
-            }
-            else
-            {
-                TriggerDeath();
-            }
+            TriggerDeath();
+            return;
         }
+
+        Invulnerable();
+        Machine?.Set<PS_Damaged>();
     }
 
-    public void OnHit(HitInfo hitInfo)
+    public virtual void OnHit(HitInfo hitInfo)
     {
+        if (IsDead || IsInvincible || IsInIF)
+            return;
 
-        Machine.Get<PS_Damaged>().info = hitInfo;
-        Machine.Set<PS_Damaged>();
+        PS_Damaged damagedState = Machine?.Get<PS_Damaged>();
+        if (damagedState != null)
+            damagedState.info = hitInfo;
+
+        // If HitInfo has its own damage value, use that instead.
+        TriggerDamage(1);
     }
 
     private void TriggerDeath()
     {
-        Debug.Log("Oh no");
+        if (IsDead)
+            return;
+
+        IsDead = true;
+
+        IsInIF = false;
+        IFTimer = 0f;
+        ToggleInvulnerability(0f);
+
+        DefinitiveInputLock = true;
+
+        if (InputManager != null)
+            InputManager.BlockInput = true;
+
+        CPUInputManager cpu = GetComponent<CPUInputManager>();
+        if (cpu != null)
+        {
+            cpu.SetAxis2DValue("Move", Vector2.zero);
+            cpu.SetButtonState("Attack", false);
+            cpu.enabled = false;
+        }
+
+        AIStateMachine ai = GetComponent<AIStateMachine>();
+        if (ai != null)
+            ai.enabled = false;
+
+        if (PlayerCollider != null)
+            PlayerCollider.enabled = false;
+
+        foreach (Collider col in CollidersToDisableOnDeath)
+        {
+            if (col != null)
+                col.enabled = false;
+        }
+
+        if (Rb != null && FreezeRigidbodyOnDeath)
+        {
+            Rb.linearVelocity = Vector3.zero;
+            Rb.angularVelocity = Vector3.zero;
+            Rb.isKinematic = true;
+        }
+
+        Visual?.SetBool(DeadBoolName, true);
+        Visual?.SetTrigger(DeathTriggerName);
+
+        if (!(this is Player) && Player.Instance != null)
+        {
+            Player.Instance.Attributes.AddToSuspicion(SuspicionOnDeath);
+        }
+
+        Debug.Log($"{name} died.");
     }
 
     private void Invulnerable()
