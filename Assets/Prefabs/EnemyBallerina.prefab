@@ -58,8 +58,7 @@ MonoBehaviour:
   SurfaceNormal: {x: 0, y: 1, z: 0}
   SurfaceAngle: 0
   Rb: {fileID: 4453766238006023159}
-  DeathTriggerName: Death
-  DeadBoolName: Dead
+  DeathBoolName: Death
   CollidersToDisableOnDeath: []
   FreezeRigidbodyOnDeath: 1
   InputDisableTimer: 0
@@ -81,10 +80,16 @@ MonoBehaviour:
     CurrentHealth: 0
     CurrentSpin: 0
     CurrentSuspicion: 0
+    SpinDuration: 0.65
+    SpinCooldown: 0.75
+    SpinUpwardBurstSpeed: 8.5
+    SpinChargePerSecond: 35
+    NextSpinAllowedTime: 0
     Grounded: 0
     Damaged: 0
     IsInSpotLight: 0
     isAttacking: 0
+    isSpin: 0
     OnHealthChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -263,7 +268,7 @@ Transform:
   m_GameObject: {fileID: 4304532153279236875}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.773, z: 0}
+  m_LocalPosition: {x: 0, y: 2.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -319,7 +324,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 2
   m_Sprite: {fileID: 1490209349, guid: 558a5160840ca8d40be40aa5c15cb719, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
@@ -339,7 +344,7 @@ Animator:
   m_GameObject: {fileID: 4304532153279236875}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: a3413079ced09dd4fa805e160beb59f6, type: 2}
+  m_Controller: {fileID: 9100000, guid: d9d81ba19a951ff45bc1df2a077dda94, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -425,7 +430,7 @@ Transform:
   m_GameObject: {fileID: 7506236047450063539}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

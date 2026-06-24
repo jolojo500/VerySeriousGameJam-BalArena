@@ -15,10 +15,13 @@ public class SuspicionManager : MonoBehaviour
     [Header("References")]
     public Player Player;
     public SuspicionZone Zone;
+    public AudioSource whisper;
+    public Animator animator;
 
     [Header("Lights")]
     public List<GameObject> NormalLights = new List<GameObject>();
     public GameObject SpotlightObject;
+    public GameObject ExclamationMark;
 
     [Header("Suspicion")]
     public float MaxSuspicion = 100f;
@@ -107,7 +110,9 @@ public class SuspicionManager : MonoBehaviour
             Zone.SetActive(false);
 
         PlayerIsInsideZone = false;
-
+        ExclamationMark.SetActive(false);
+        whisper.Stop();
+        animator.SetBool("sus",false);
         Debug.Log("Normal lights phase started.");
     }
 
@@ -126,7 +131,9 @@ public class SuspicionManager : MonoBehaviour
 
         if (Zone != null)
             Zone.SetActive(true);
-
+        whisper.Play();
+        animator.SetBool("sus", true);
+        Player.Attributes.CurrentSuspicion = 0;
         Debug.Log("Spotlight phase started.");
     }
 
@@ -151,9 +158,9 @@ public class SuspicionManager : MonoBehaviour
             : SuspicionRiseRate * Time.deltaTime;
 
         Player.Attributes.AddToSuspicion(amount);
-
+        whisper.volume = CurrentSuspicion / 200;
         CurrentSuspicion = Player.Attributes.CurrentSuspicion;
-
+        ExclamationMark.SetActive(CurrentSuspicion > 5);
         if (CurrentSuspicion >= MaxSuspicion)
         {
             KillPlayerFromSuspicion();

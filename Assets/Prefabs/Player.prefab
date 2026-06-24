@@ -399,8 +399,7 @@ MonoBehaviour:
   SurfaceNormal: {x: 0, y: 1, z: 0}
   SurfaceAngle: 0
   Rb: {fileID: 1606710105005207856}
-  DeathTriggerName: Death
-  DeadBoolName: Dead
+  DeathBoolName: Death
   CollidersToDisableOnDeath: []
   FreezeRigidbodyOnDeath: 1
   InputDisableTimer: 0
@@ -425,7 +424,7 @@ MonoBehaviour:
     SpinDuration: 0.65
     SpinCooldown: 2
     SpinUpwardBurstSpeed: 2
-    SpinChargePerSecond: 10
+    SpinChargePerSecond: 50
     NextSpinAllowedTime: 0
     Grounded: 0
     Damaged: 0
@@ -459,6 +458,55 @@ MonoBehaviour:
   PlayerCamera: {fileID: 0}
   FreeLookCamera: {fileID: 0}
   SPINLossRate: 2
+  KickEnergyTiers:
+    ConsumeAllEnergyOnKick: 0
+    MinimumEnergyToKick: 25
+    EnergySpentPerKick: 25
+    Tier25:
+      Damage: 1
+      KnockbackForce: 2
+      HitFreezeLength: 0.06
+      ScreenShakeStrength: 0.35
+      KickLungeSpeed: 8
+      AttackDurationMultiplier: 0.85
+      ImpactSoundPitch: 0.9
+      ImpactSoundVolume: 0.6
+      EnemyLaunchHeight: 1.5
+    Tier50:
+      Damage: 1
+      KnockbackForce: 4
+      HitFreezeLength: 0.09
+      ScreenShakeStrength: 0.6
+      KickLungeSpeed: 10
+      AttackDurationMultiplier: 1
+      ImpactSoundPitch: 1
+      ImpactSoundVolume: 0.75
+      EnemyLaunchHeight: 2.5
+    Tier75:
+      Damage: 2
+      KnockbackForce: 6
+      HitFreezeLength: 0.12
+      ScreenShakeStrength: 0.85
+      KickLungeSpeed: 12
+      AttackDurationMultiplier: 1.1
+      ImpactSoundPitch: 1.08
+      ImpactSoundVolume: 0.9
+      EnemyLaunchHeight: 3.5
+    Tier100:
+      Damage: 3
+      KnockbackForce: 8
+      HitFreezeLength: 0.16
+      ScreenShakeStrength: 1.15
+      KickLungeSpeed: 14
+      AttackDurationMultiplier: 1.25
+      ImpactSoundPitch: 1.18
+      ImpactSoundVolume: 1
+      EnemyLaunchHeight: 4.5
+  KickImpactAudioSource: {fileID: 0}
+  KickImpactClip: {fileID: 0}
+  OnKickScreenShake:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!54 &1606710105005207856
 Rigidbody:
   m_ObjectHideFlags: 0

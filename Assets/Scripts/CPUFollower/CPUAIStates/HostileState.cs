@@ -227,22 +227,39 @@ public class HostileState : CPUAIState
             return;
 
         Vector3 toPlayer = Player.Instance.transform.position - Entity.transform.position;
-        toPlayer.y = 0f;
 
-        float distance = toPlayer.magnitude;
+        // Do not hit if the player is too high/low compared to the enemy.
+        float verticalDistance = Mathf.Abs(toPlayer.y);
 
-        if (distance > AIMachine.DashPushRadius)
+        if (verticalDistance > 1.2f)
             return;
 
-        if (distance <= 0.001f)
+        Vector3 flatToPlayer = toPlayer;
+        flatToPlayer.y = 0f;
+
+        if (flatToPlayer.sqrMagnitude <= 0.001f)
             return;
 
-        Vector3 pushDirection = toPlayer.normalized;
+        Vector3 forward = dashDirection.normalized;
+        Vector3 right = Vector3.Cross(Vector3.up, forward).normalized;
 
-        float facingDot = Vector3.Dot(dashDirection.normalized, pushDirection);
+        float forwardDistance = Vector3.Dot(flatToPlayer, forward);
+        float sideDistance = Mathf.Abs(Vector3.Dot(flatToPlayer, right));
 
-        if (facingDot < 0.25f)
+        float hitForwardRange = AIMachine.DashPushRadius;
+        float hitWidth = 0.8f;
+
+        // Player must be in front of the kick, not beside/on top/behind.
+        if (forwardDistance < 0.3f)
             return;
+
+        if (forwardDistance > hitForwardRange)
+            return;
+
+        if (sideDistance > hitWidth)
+            return;
+
+        Vector3 pushDirection = flatToPlayer.normalized;
 
         Player.Instance.TriggerDamage(1);
 
@@ -250,8 +267,10 @@ public class HostileState : CPUAIState
             pushDirection * AIMachine.DashPushForce + Vector3.up * AIMachine.DashPushUpForce,
             ForceMode.Impulse
         );
-
+        HitStopManager.Instance?.HitStop(0.06f);
+        CameraShakeManager.Instance?.Shake(0.5f);
         pushedPlayerThisDash = true;
+        
 
         Debug.Log("AI dash hit and pushed player.");
     }
