@@ -58,6 +58,10 @@ public class AIStateMachine : StateMachine<CPUAIState>
     public float JumpChanceWhenTimerEnds = 0.7f;
     public float AIJumpSpeed = 12f;
 
+    [Header("Stun")]
+    public float DefaultStunDuration = 0.45f;
+    private float stunTimer;
+    public bool IsStunned => stunTimer > 0f;
     private void Awake()
     {
         CPUInput = GetComponent<CPUInputManager>();
@@ -124,7 +128,14 @@ public class AIStateMachine : StateMachine<CPUAIState>
             ClearInputs();
             return;
         }
-        
+
+        if (IsStunned)
+        {
+            stunTimer -= Time.deltaTime;
+            ClearInputs();
+            return;
+        }
+
         CurrentState?.OnUpdate();
     }
 
@@ -207,5 +218,23 @@ public class AIStateMachine : StateMachine<CPUAIState>
         CPUInput.SetAxis2DValue("Move", Vector2.zero);
         CPUInput.SetButtonState("Attack", false);
         CPUInput.SetButtonState("Jump", false);
+    }
+    public void Stun(float duration = -1f)
+    {
+        stunTimer = duration > 0f ? duration : DefaultStunDuration;
+
+        ClearInputs();
+
+        if (ControlledEntity != null)
+        {
+            ControlledEntity.Attributes.isAttacking = false;
+
+            if (ControlledEntity.Visual != null)
+            {
+                ControlledEntity.Visual.SetBool(WindUpBoolName, false);
+            }
+        }
+
+        Debug.Log($"{name} stunned for {stunTimer} seconds.");
     }
 }

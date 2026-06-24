@@ -356,6 +356,7 @@ GameObject:
   - component: {fileID: 643908506309432580}
   - component: {fileID: 1606710105005207856}
   - component: {fileID: 2142831833613286837}
+  - component: {fileID: 1456320597169276255}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -393,6 +394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b238df807af14624098e6ac4d673db14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Venice.Player
+  ParticleFx: {fileID: 7466899206041570206, guid: 622bbff05164b6d42a2166a315af6d51, type: 3}
   FacingDirection: 1
   SurfaceNormal: {x: 0, y: 1, z: 0}
   SurfaceAngle: 0
@@ -411,6 +413,7 @@ MonoBehaviour:
   IFMaxTime: 3
   IFTimer: 0
   InputLockType: 0
+  Team: 0
   PhysicsInfo: {fileID: 11400000, guid: a9abbf342bb75024fab878508ddfa98d, type: 2}
   Attributes:
     MaxHealth: 0
@@ -419,10 +422,16 @@ MonoBehaviour:
     CurrentHealth: 0
     CurrentSpin: 0
     CurrentSuspicion: 0
+    SpinDuration: 0.65
+    SpinCooldown: 2
+    SpinUpwardBurstSpeed: 2
+    SpinChargePerSecond: 10
+    NextSpinAllowedTime: 0
     Grounded: 0
     Damaged: 0
     IsInSpotLight: 0
     isAttacking: 0
+    isSpin: 0
     OnHealthChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -489,3 +498,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abd4a1340598faf4bba9547b88700a58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Venice.PlayerStateMachine
+--- !u!114 &1456320597169276255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2854774681606362045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f8677778e85244429f8dd052a5db7aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Venice.PlayerSpinAbility
+  entity: {fileID: 643908506309432580}
+  spinInputName: Spin

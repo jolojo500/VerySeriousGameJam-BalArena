@@ -58,10 +58,23 @@ namespace Venice
         public float CurrentSpin;
 
         public float CurrentSuspicion;
+        
+        public float SpinDuration = 0.65f;
+        public float SpinCooldown = 0.75f;
+        public float SpinUpwardBurstSpeed = 8.5f;
+        public float SpinChargePerSecond = 35f;
+        public float NextSpinAllowedTime;
+        public bool CanStartSpin()
+        {
+            return !isSpin && Time.time >= NextSpinAllowedTime;
+        }
 
+        public void StartSpinCooldown()
+        {
+            NextSpinAllowedTime = Time.time + SpinCooldown;
+        }
 
-
-        public bool Grounded = false, Damaged = false, IsInSpotLight = false, isAttacking = false;
+        public bool Grounded = false, Damaged = false, IsInSpotLight = false, isAttacking = false, isSpin = false;
         public UnityEvent<Tuple<int, int>> OnHealthChanged = new UnityEvent<Tuple<int, int>>();
         public UnityEvent<Tuple<int, int>> OnSpinChanged = new UnityEvent<Tuple<int, int>>();
         public UnityEvent<Tuple<int, int>> OnSuspicionChanged = new UnityEvent<Tuple<int, int>>();

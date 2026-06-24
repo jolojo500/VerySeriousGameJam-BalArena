@@ -5,7 +5,7 @@ using Venice;
 
 public class Entity : MonoBehaviour
 {
-
+    public GameObject ParticleFx;
     public int FacingDirection = 1;
     public float XSpeed
     {

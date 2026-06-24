@@ -63,7 +63,9 @@ namespace Venice
 		}
 		private void Awake()
 		{
-			MainInput.onActionTriggered += OnActionTriggered;
+            if (!Instance)
+                Instance = this;
+            MainInput.onActionTriggered += OnActionTriggered;
 			CurrentMap = MainInput.defaultActionMap;
 			Buttons = new List<UButton>(); Axis1D = new List<UAxis1D>(); Axis2D = new List<UAxis2D>();
 			foreach(InputActionMap a in MainInput.actions.actionMaps){
@@ -104,8 +106,7 @@ namespace Venice
 		public virtual string UA1GetMap(string name) => Axis1D.Find(s=>s.Name == name).MapName;
 		public virtual UAxis2D UA2Get(string name, string map) => Axis2D.Find(s=>s.Name == name && s.MapName == map);
 		public virtual string UA2GetMap(string name) => Axis2D.Find(s=>s.Name == name).MapName;
-		
-		private void Update(){	
+        private void Update(){	
 			if (!Instance) 
 				Instance = this;
 		}

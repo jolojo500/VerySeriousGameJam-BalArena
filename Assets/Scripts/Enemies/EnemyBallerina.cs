@@ -85,7 +85,7 @@ namespace Venice
             Debug.Log("Ouch, enemy ballerina was hit!");
 
             Attributes.Damaged = true;
-
+            GetComponent<AIStateMachine>()?.Stun();
             Vector3 dir = transform.position - info.SourcePosition;
             dir.y = 0f;
 

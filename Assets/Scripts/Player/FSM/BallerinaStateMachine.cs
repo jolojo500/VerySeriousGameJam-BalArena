@@ -24,6 +24,7 @@ namespace Venice
             Add(new PS_Attack());
             Add(new PS_Pose());
             Add(new PS_Death());
+            Add(new PS_Spin());
             Initialize<PS_Move>();
         }
 

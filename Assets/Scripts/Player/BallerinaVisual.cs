@@ -35,6 +35,7 @@ namespace Venice
             SetBool("Damaged", Entity.Attributes.Damaged);
             SetFloat("XSpeed", Mathf.Abs(Entity.XSpeed));
             SetFloat("YSpeed", Entity.YSpeed);
+            SetBool("Spin", Entity.Attributes.isSpin);
             SetInteger("State", Entity?.Machine?.CurrentState?.StateNumber ?? 0);
             UpdateFacing();
             if (Entity.IsInvulnerable) HandleInvulnerabilityBlink();

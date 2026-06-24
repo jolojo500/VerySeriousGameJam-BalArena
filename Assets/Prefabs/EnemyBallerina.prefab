@@ -53,6 +53,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f5fea5700a57f44d9d5a1895ad6b230, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Venice.Enemy
+  ParticleFx: {fileID: 7466899206041570206, guid: 622bbff05164b6d42a2166a315af6d51, type: 3}
   FacingDirection: 1
   SurfaceNormal: {x: 0, y: 1, z: 0}
   SurfaceAngle: 0
@@ -188,6 +189,7 @@ MonoBehaviour:
   JumpButtonPressTime: 0.12
   JumpChanceWhenTimerEnds: 0.5
   AIJumpSpeed: 12
+  DefaultStunDuration: 0.65
 --- !u!114 &8326835988463794670
 MonoBehaviour:
   m_ObjectHideFlags: 0

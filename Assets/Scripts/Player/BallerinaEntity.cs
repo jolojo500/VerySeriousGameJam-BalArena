@@ -77,7 +77,7 @@ public class BallerinaEntity : Entity
         Attributes.MaxSuspicion = 100;
 
         Attributes.AddToHealth(Attributes.MaxHealth);
-        Attributes.AddToSpin(Attributes.MaxSpin);
+        Attributes.AddToSpin(0.0f);
         Attributes.AddToSuspicion(0);
 
         Controllers.AddController(new ComboController());
@@ -174,6 +174,7 @@ public class BallerinaEntity : Entity
 
     public virtual void OnHit(HitInfo hitInfo)
     {
+        Instantiate(ParticleFx, transform.position, Quaternion.identity);
         BallerinaEntity attacker = hitInfo.SourceEntity;
 
         if (attacker != null && attacker.Team == Team)

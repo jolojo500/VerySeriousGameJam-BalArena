@@ -27,7 +27,7 @@ namespace Venice
                 if(ComboCount >= 3)
                 {
                     UIManager.Instance.ComboCountText.SetText(ComboCount+"!");
-                    UIManager.Instance.ComboCountText.ApplySquashAndStretch(1.1f, .2f);
+                    UIManager.Instance.ComboCountText.ApplySquashAndStretch(1.1f, .2f); 
                 }
             }
         }
