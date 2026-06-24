@@ -15,7 +15,7 @@ MonoBehaviour:
   Acceleration: 25
   Deceleration: 100
   Friction: 80
-  MaxSpeed: 4.5
+  MaxSpeed: 3
   TopSpeed: 10
   SlopeRepelDownHill: 70
   SlopeRepelUpHill: 30
@@ -96,4 +96,4 @@ MonoBehaviour:
   FloatDashTurnRateMultiplier: 0.15
   FloatDashESPDrainRate: 10
   AttackDuration: 0.25
-  AttackLungeSpeed: 20
+  AttackLungeSpeed: 10

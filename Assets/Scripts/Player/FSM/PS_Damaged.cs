@@ -33,7 +33,6 @@ namespace Venice
                 hitCombo = 1;
             }
             lastHitTime = Time.time;
-            Attributes.Grounded = true;
             Attributes.Damaged = true;
             Entity.InputManager.BlockInput = true;
             RecoveryTimer = .5f;
@@ -53,7 +52,7 @@ namespace Venice
 
         public override void OnExit()
         {
-
+            Attributes.Damaged = false;
             Visual.Skin.material.SetInt("_Hurted", 0);
             Entity.InputManager.BlockInput = false;
             Entity.Rb.linearVelocity = -Transform.forward;

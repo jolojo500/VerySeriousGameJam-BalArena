@@ -9,7 +9,7 @@ namespace Venice
         public BallerinaEntity SourceEntity;
         public Vector3 SourcePosition;
         public float KnockbackForce;
-        public float Damage;
+        public int Damage;
         public float HitCooldown;
         public GameObject Owner;
         public HitInfo()

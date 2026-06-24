@@ -3,6 +3,7 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using static UnityEditor.Profiling.RawFrameDataView;
 
 namespace Venice
 {
@@ -15,7 +16,24 @@ namespace Venice
         public Transform FreeLookCamera;
 
         public float SPINLossRate = 2;
-        
+        [Header("Player Kick Energy")]
+        public PlayerKickEnergyTiers KickEnergyTiers = new PlayerKickEnergyTiers();
+
+        [Header("Player Kick Feedback")]
+        public AudioSource KickImpactAudioSource;
+        public AudioClip KickImpactClip;
+        public FloatEvent OnKickScreenShake = new FloatEvent();
+
+        public void PlayKickImpactFeedback(PlayerKickTier tier)
+        {
+            OnKickScreenShake?.Invoke(tier.ScreenShakeStrength);
+
+            if (KickImpactAudioSource != null && KickImpactClip != null)
+            {
+                KickImpactAudioSource.pitch = tier.ImpactSoundPitch;
+                KickImpactAudioSource.PlayOneShot(KickImpactClip, tier.ImpactSoundVolume);
+            }
+        }
         private void Awake()
         {
             Instance = this;
@@ -113,5 +131,134 @@ namespace Venice
             OnSuspicionChanged?.Invoke(new Tuple<int, int>(newSus, maxSus));
         }
 
+    }
+    [Serializable]
+    public class FloatEvent : UnityEvent<float>
+    {
+    }
+
+    [Serializable]
+    public class PlayerKickEnergyTiers
+    {
+        public bool ConsumeAllEnergyOnKick = false;
+
+        [Header("Energy Cost")]
+        public float MinimumEnergyToKick = 25f;
+        public float EnergySpentPerKick = 25f;
+
+        [Header("25% Kick")]
+        public PlayerKickTier Tier25 = new PlayerKickTier
+        {
+            Damage = 1,
+            KnockbackForce = 2f,
+            HitFreezeLength = 0.06f,
+            ScreenShakeStrength = 0.35f,
+            KickLungeSpeed = 8f,
+            AttackDurationMultiplier = 0.85f,
+            ImpactSoundPitch = 0.9f,
+            ImpactSoundVolume = 0.6f,
+            EnemyLaunchHeight = 1.5f
+        };
+
+        [Header("50% Kick")]
+        public PlayerKickTier Tier50 = new PlayerKickTier
+        {
+            Damage = 1,
+            KnockbackForce = 4f,
+            HitFreezeLength = 0.09f,
+            ScreenShakeStrength = 0.6f,
+            KickLungeSpeed = 10f,
+            AttackDurationMultiplier = 1f,
+            ImpactSoundPitch = 1f,
+            ImpactSoundVolume = 0.75f,
+            EnemyLaunchHeight = 2.5f
+        };
+
+        [Header("75% Kick")]
+        public PlayerKickTier Tier75 = new PlayerKickTier
+        {
+            Damage = 2,
+            KnockbackForce = 6f,
+            HitFreezeLength = 0.12f,
+            ScreenShakeStrength = 0.85f,
+            KickLungeSpeed = 12f,
+            AttackDurationMultiplier = 1.1f,
+            ImpactSoundPitch = 1.08f,
+            ImpactSoundVolume = 0.9f,
+            EnemyLaunchHeight = 3.5f
+        };
+
+        [Header("100% Kick")]
+        public PlayerKickTier Tier100 = new PlayerKickTier
+        {
+            Damage = 3,
+            KnockbackForce = 8f,
+            HitFreezeLength = 0.16f,
+            ScreenShakeStrength = 1.15f,
+            KickLungeSpeed = 14f,
+            AttackDurationMultiplier = 1.25f,
+            ImpactSoundPitch = 1.18f,
+            ImpactSoundVolume = 1f,
+            EnemyLaunchHeight = 4.5f
+        };
+
+        public bool TryGetTier(float currentEnergy, float maxEnergy, out PlayerKickTier tier)
+        {
+            tier = Tier25;
+
+            if (maxEnergy <= 0f)
+                return false;
+
+            float percent = Mathf.Clamp01(currentEnergy / maxEnergy) * 100f;
+
+            if (percent < 25f)
+                return false;
+
+            int clampedPercent = Mathf.FloorToInt(percent / 25f) * 25;
+            clampedPercent = Mathf.Clamp(clampedPercent, 25, 100);
+
+            switch (clampedPercent)
+            {
+                case 25:
+                    tier = Tier25;
+                    break;
+
+                case 50:
+                    tier = Tier50;
+                    break;
+
+                case 75:
+                    tier = Tier75;
+                    break;
+
+                case 100:
+                    tier = Tier100;
+                    break;
+            }
+
+            return true;
+        }
+
+        public float GetEnergyCost(float currentEnergy)
+        {
+            if (ConsumeAllEnergyOnKick)
+                return currentEnergy;
+
+            return EnergySpentPerKick;
+        }
+    }
+
+    [Serializable]
+    public struct PlayerKickTier
+    {
+        public int Damage;
+        public float KnockbackForce;
+        public float HitFreezeLength;
+        public float ScreenShakeStrength;
+        public float KickLungeSpeed;
+        public float AttackDurationMultiplier;
+        public float ImpactSoundPitch;
+        public float ImpactSoundVolume;
+        public float EnemyLaunchHeight;
     }
 }

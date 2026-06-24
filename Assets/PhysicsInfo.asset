@@ -96,4 +96,4 @@ MonoBehaviour:
   FloatDashTurnRateMultiplier: 0.15
   FloatDashESPDrainRate: 10
   AttackDuration: 0.25
-  AttackLungeSpeed: 20
+  AttackLungeSpeed: 10

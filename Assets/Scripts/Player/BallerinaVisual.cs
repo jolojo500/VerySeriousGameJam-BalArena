@@ -93,7 +93,11 @@ namespace Venice
 
             parentObject.localScale = scale;
         }
+        public void selfDestruct()
+        {
+            Destroy(transform.parent.gameObject);
 
+        }
 
     }
 

@@ -14,8 +14,7 @@ public class BallerinaEntity : Entity
     public bool IsDead { get; private set; }
 
     [Header("Death")]
-    public string DeathTriggerName = "Death";
-    public string DeadBoolName = "Dead";
+    public string DeathBoolName = "Death";
     public Collider[] CollidersToDisableOnDeath;
     public bool FreezeRigidbodyOnDeath = true;
     public bool IsInvulnerable => _invulnerabilityTimer > 0f;
@@ -54,7 +53,16 @@ public class BallerinaEntity : Entity
 
     public Controllers<BallerinaEntity> Controllers = new Controllers<BallerinaEntity>();
 
+    [Header("Death Arc Motion")]
+    private bool UseDeathArcMotion = true;
+    private float DeathArcDuration = 0.6f;
+    private bool RandomizeDeathArcX = true;
+    private float DeathArcRandomXRange = 5f;
+    private float DeathArcTargetZOffset = -10f;
+    private float DeathArcTargetY = -10f;
+    private float DeathArcUpAmount = 2.5f;
 
+    private bool MakeRigidbodyKinematicOnDeath = true;
     public override void Init()
     {
         base.Init(); // Important: initialize Rb first
@@ -191,7 +199,7 @@ public class BallerinaEntity : Entity
 
         ApplyHitLaunch(hitInfo);
 
-        TriggerDamage(1);
+        TriggerDamage(hitInfo.Damage);
     }
 
     public void TriggerDeath()
@@ -239,10 +247,14 @@ public class BallerinaEntity : Entity
             Rb.linearVelocity = Vector3.zero;
             Rb.angularVelocity = Vector3.zero;
         }
-
-        Visual?.SetBool(DeadBoolName, true);
-        Visual?.SetTrigger(DeathTriggerName);
-
+        Machine.enabled = false;
+        Attributes.Damaged = false;
+        Visual?.SetBool(DeathBoolName,true);
+        
+        if (UseDeathArcMotion)
+        {
+            StartCoroutine(DeathArcRoutine());
+        }
         Debug.Log($"{name} died.");
     }
 
@@ -304,5 +316,47 @@ public class BallerinaEntity : Entity
             Rb.linearVelocity + launchVelocity,
             MaxHitLaunchSpeed
         );
+    }
+    private IEnumerator DeathArcRoutine()
+    {
+        if (Rb != null && MakeRigidbodyKinematicOnDeath)
+        {
+            Rb.isKinematic = true;
+        }
+
+        Vector3 startPosition = transform.position;
+
+        float randomXOffset = RandomizeDeathArcX
+    ? Random.Range(-DeathArcRandomXRange, DeathArcRandomXRange)
+    : 0f;
+
+        Vector3 endPosition = new Vector3(
+            startPosition.x + randomXOffset,
+            DeathArcTargetY,
+            startPosition.z + DeathArcTargetZOffset
+        );
+
+        float timer = 0f;
+
+        while (timer < DeathArcDuration)
+        {
+            timer += Time.deltaTime;
+
+            float t = Mathf.Clamp01(timer / DeathArcDuration);
+            float smoothT = Mathf.SmoothStep(0f, 1f, t);
+
+            Vector3 position = Vector3.Lerp(startPosition, endPosition, smoothT);
+
+            // This makes it go slightly up first, then fall down to Y = -10.
+            float upwardArc = Mathf.Sin(t * Mathf.PI) * DeathArcUpAmount;
+            position.y += upwardArc;
+
+            transform.position = position;
+
+            yield return null;
+        }
+
+        transform.position = endPosition;
+        Visual.selfDestruct();
     }
 }
