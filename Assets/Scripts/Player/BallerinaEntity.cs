@@ -3,7 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Venice;
-
+public enum EntityTeam
+{
+    Player,
+    Enemy
+}
 public class BallerinaEntity : Entity
 {
 
@@ -31,7 +35,7 @@ public class BallerinaEntity : Entity
     public float OOCTimer; //Out of control
     public float IFMaxTime = 5.0f, IFTimer;
     public InputLockType InputLockType = InputLockType.None;
-
+    public EntityTeam Team;
 
     public PhysicsInfo PhysicsInfo;
     public BallerinaAttributes Attributes = new BallerinaAttributes();
@@ -67,7 +71,7 @@ public class BallerinaEntity : Entity
         Machine = GetComponent<BallerinaStateMachine>();
         if (Machine != null)
             Machine.Init();
-
+        
         Attributes.MaxHealth = 3;
         Attributes.MaxSpin = 100;
         Attributes.MaxSuspicion = 100;
@@ -128,7 +132,6 @@ public class BallerinaEntity : Entity
     {
         if (IsDead)
             return;
-
         Controllers.FixedUpdate();
     }
     public void BlockInput(StageObject stageObject)
@@ -171,6 +174,11 @@ public class BallerinaEntity : Entity
 
     public virtual void OnHit(HitInfo hitInfo)
     {
+        BallerinaEntity attacker = hitInfo.SourceEntity;
+
+        if (attacker != null && attacker.Team == Team)
+            return;
+
         GetComponent<AIStateMachine>()?.AlertFromHit();
 
         if (IsDead || IsInvincible || IsInIF)
@@ -229,7 +237,6 @@ public class BallerinaEntity : Entity
         {
             Rb.linearVelocity = Vector3.zero;
             Rb.angularVelocity = Vector3.zero;
-            Rb.isKinematic = true;
         }
 
         Visual?.SetBool(DeadBoolName, true);

@@ -356,7 +356,6 @@ GameObject:
   - component: {fileID: 643908506309432580}
   - component: {fileID: 1606710105005207856}
   - component: {fileID: 2142831833613286837}
-  - component: {fileID: 8692708887997111992}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -398,7 +397,6 @@ MonoBehaviour:
   SurfaceNormal: {x: 0, y: 1, z: 0}
   SurfaceAngle: 0
   Rb: {fileID: 1606710105005207856}
-  SuspicionOnDeath: 25
   DeathTriggerName: Death
   DeadBoolName: Dead
   CollidersToDisableOnDeath: []
@@ -410,7 +408,7 @@ MonoBehaviour:
   IsInvincible: 0
   IsInIF: 0
   OOCTimer: 0
-  IFMaxTime: 5
+  IFMaxTime: 3
   IFTimer: 0
   InputLockType: 0
   PhysicsInfo: {fileID: 11400000, guid: a9abbf342bb75024fab878508ddfa98d, type: 2}
@@ -424,6 +422,7 @@ MonoBehaviour:
     Grounded: 0
     Damaged: 0
     IsInSpotLight: 0
+    isAttacking: 0
     OnHealthChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -445,12 +444,12 @@ MonoBehaviour:
   InputManager: {fileID: 8612556736973533563}
   Visual: {fileID: 6279532480029286850}
   Machine: {fileID: 2142831833613286837}
+  HitLaunchHorizontalMultiplier: 1
+  HitLaunchUpMultiplier: 0.35
+  MaxHitLaunchSpeed: 15
   PlayerCamera: {fileID: 0}
   FreeLookCamera: {fileID: 0}
   SPINLossRate: 2
-  SpinRestoreRate: 30
-  SuspicionCalmRate: 25
-  SuspicionRiseRate: 5
 --- !u!54 &1606710105005207856
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -477,7 +476,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 120
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!114 &2142831833613286837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -490,19 +489,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abd4a1340598faf4bba9547b88700a58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Venice.PlayerStateMachine
---- !u!114 &8692708887997111992
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2854774681606362045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 868d6229006d3dc4789ce9c5027d8e14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Entity
-  FacingDirection: 1
-  SurfaceNormal: {x: 0, y: 1, z: 0}
-  SurfaceAngle: 0
-  Rb: {fileID: 1606710105005207856}

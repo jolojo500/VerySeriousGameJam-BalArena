@@ -17,6 +17,7 @@ namespace Venice
 
         public override void OnEnter()
         {
+            Entity.Attributes.isAttacking = true;
             _hitThisSwing.Clear();
             Attributes.Damaged = false;
             Entity.Attributes.AddToSpin(-Entity.SpinKickCost);
@@ -35,7 +36,7 @@ namespace Venice
 
         public override void OnExit()
         {
-
+            Entity.Attributes.isAttacking = false;
             Vector3 flat = Entity.HorizontalVelocity;
             if (flat.magnitude > PhysicsInfo.MaxSpeed)
                 Entity.SetHorizontalVelocity(flat.normalized * PhysicsInfo.MaxSpeed);
@@ -45,33 +46,47 @@ namespace Venice
 
         public void Attack()
         {
-            Vector3 center = Transform.position + Vector3.up + Rb.linearVelocity.normalized * 0.3f;
+            Vector3 attackDirection = Rb.linearVelocity.normalized;
+
+            if (attackDirection == Vector3.zero)
+                attackDirection = Transform.forward;
+
+            Vector3 center = Transform.position + Vector3.up + attackDirection * 0.3f;
 
             Debug.DrawLine(center, center + Vector3.up * 0.1f, Color.green);
+
             Collider[] hits = Physics.OverlapSphere(
-                                center,
-                                1.5f,
-                                ~0,
-                                QueryTriggerInteraction.Collide
-                            );
+                center,
+                1.5f,
+                ~0,
+                QueryTriggerInteraction.Collide
+            );
+
             foreach (var hit in hits)
             {
                 var target = hit.GetComponentInParent<Hittable>();
-                if (target == null) continue;
+                if (target == null)
+                    continue;
 
-                if (target.transform.IsChildOf(Entity.transform)) continue;
+                if (target.transform.IsChildOf(Entity.transform))
+                    continue;
 
-                if (!_hitThisSwing.Add(target)) continue;
-                target.Hit(new HitInfo
+                if (!_hitThisSwing.Add(target))
+                    continue;
+
+                HitInfo info = new HitInfo
                 {
+                    SourceEntity = Entity,
                     SourcePosition = Transform.position,
                     KnockbackForce = 1f + (.2f * Entity.Controllers.GetController<ComboController>().ComboCount),
                     HitCooldown = .3f,
                     Owner = Entity.gameObject
-                });
+                };
+
+                target.Hit(info);
+                HitStopManager.Instance?.HitStop(0.1f);
                 Entity.Controllers.GetController<ComboController>().ConfirmHit();
             }
-
         }
         public override void OnFixedUpdate()
         {

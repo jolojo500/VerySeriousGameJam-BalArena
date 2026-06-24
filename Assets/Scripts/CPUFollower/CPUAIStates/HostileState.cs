@@ -21,11 +21,9 @@ public class HostileState : CPUAIState
 
     private Vector3 dashDirection;
     private bool pushedPlayerThisDash;
-
     public override void OnEnter()
     {
         base.OnEnter();
-
         phase = AttackPhase.Chasing;
 
         dashCooldownTimer = Random.Range(0.5f, 1.2f);
@@ -40,15 +38,18 @@ public class HostileState : CPUAIState
 
     public override void OnUpdate()
     {
+        HandleRandomJump();
         if (Player.Instance == null || Entity == null)
             return;
+
+        
 
         if (!AIMachine.IsAggressive)
         {
             AIMachine.Set<StandByState>();
             return;
         }
-
+        
         switch (phase)
         {
             case AttackPhase.Chasing:
@@ -166,6 +167,7 @@ public class HostileState : CPUAIState
         }
 
         FollowerCPU.SetAxis2DValue("Move", AIMachine.WorldDirectionToMoveInput(dashDirection));
+        Entity.Attributes.isAttacking = true;
         FollowerCPU.SetButtonState("Attack", true);
 
         ForceDashVelocity();
@@ -217,6 +219,7 @@ public class HostileState : CPUAIState
 
     private void TryPushPlayer()
     {
+        Entity.Attributes.isAttacking = false;
         if (pushedPlayerThisDash)
             return;
 
@@ -265,7 +268,6 @@ public class HostileState : CPUAIState
 
         return toPlayer.normalized;
     }
-
     public override void OnExit()
     {
         base.OnExit();
@@ -279,5 +281,6 @@ public class HostileState : CPUAIState
 
         FollowerCPU.SetAxis2DValue("Move", Vector2.zero);
         FollowerCPU.SetButtonState("Attack", false);
+        FollowerCPU.SetButtonState("Jump", false);
     }
 }

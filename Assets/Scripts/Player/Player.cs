@@ -61,7 +61,7 @@ namespace Venice
 
 
 
-        public bool Grounded = false, Damaged = false, IsInSpotLight = false;
+        public bool Grounded = false, Damaged = false, IsInSpotLight = false, isAttacking = false;
         public UnityEvent<Tuple<int, int>> OnHealthChanged = new UnityEvent<Tuple<int, int>>();
         public UnityEvent<Tuple<int, int>> OnSpinChanged = new UnityEvent<Tuple<int, int>>();
         public UnityEvent<Tuple<int, int>> OnSuspicionChanged = new UnityEvent<Tuple<int, int>>();

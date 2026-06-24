@@ -237,7 +237,6 @@ namespace Venice
             if (button != null)
             {
                 button.hold = isPressed;
-                Debug.Log(UBGet(name, CurrentMap).hold);
             }
         }
 
@@ -247,7 +246,7 @@ namespace Venice
             if (axis1D != null)
             {
                 axis1D.Value = value;
-                Debug.Log(UA1Get(name, CurrentMap).Value);
+  
             }
         }
 

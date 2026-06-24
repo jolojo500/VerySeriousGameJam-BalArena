@@ -12,7 +12,7 @@ public class AIStateMachine : StateMachine<CPUAIState>
 
     [Header("Aggro")]
     public bool IsAggressive { get; private set; }
-    public bool AlertAllBallerinasOnHit = true;
+    public bool AlertAllBallerinasOnHit = false;
 
     [Header("Wandering")]
     public float ArenaRange = 13f;
@@ -50,14 +50,36 @@ public class AIStateMachine : StateMachine<CPUAIState>
     public float DashPushForce = 8f;
     public float DashPushUpForce = 1.5f;
 
+    [Header("Random Jumping")]
+    public bool CanRandomJump = true;
+    public float RandomJumpMinTime = 1.5f;
+    public float RandomJumpMaxTime = 4f;
+    public float JumpButtonPressTime = 0.12f;
+    public float JumpChanceWhenTimerEnds = 0.7f;
+    public float AIJumpSpeed = 12f;
+
     private void Awake()
     {
         CPUInput = GetComponent<CPUInputManager>();
 
-        if (CPUInput != null)
+        if (ControlledEntity == null)
+            ControlledEntity = GetComponent<BallerinaEntity>();
+
+        if (ControlledEntity == null)
+            ControlledEntity = GetComponentInParent<BallerinaEntity>();
+
+        if (CPUInput != null && ControlledEntity != null)
         {
             CPUInput.Entity = ControlledEntity;
             CPUInput.AIMachine = this;
+
+            ControlledEntity.InputManager = CPUInput;
+
+            Debug.Log($"{name}: AI connected to {ControlledEntity.name}");
+        }
+        else
+        {
+            Debug.LogError($"{name}: AI NOT CONNECTED. CPUInput={CPUInput != null}, ControlledEntity={ControlledEntity != null}");
         }
     }
 
@@ -102,22 +124,13 @@ public class AIStateMachine : StateMachine<CPUAIState>
             ClearInputs();
             return;
         }
-
+        
         CurrentState?.OnUpdate();
     }
 
     public void AlertFromHit()
     {
         Alert(false);
-
-        if (!AlertAllBallerinasOnHit)
-            return;
-
-        foreach (AIStateMachine ai in AllBallerinaAIs)
-        {
-            if (ai != null)
-                ai.Alert(true);
-        }
     }
 
     private void Alert(bool fromAlly)
@@ -193,5 +206,6 @@ public class AIStateMachine : StateMachine<CPUAIState>
 
         CPUInput.SetAxis2DValue("Move", Vector2.zero);
         CPUInput.SetButtonState("Attack", false);
+        CPUInput.SetButtonState("Jump", false);
     }
 }

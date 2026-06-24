@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5516544638599745661}
-  - component: {fileID: 4000352510935394700}
-  - component: {fileID: 5742684372130524593}
+  - component: {fileID: 4557740656623254548}
   - component: {fileID: 4453766238006023159}
-  - component: {fileID: 4611502293182398924}
   - component: {fileID: 9199957067459279601}
   - component: {fileID: 8326835988463794670}
+  - component: {fileID: 4611502293182398924}
+  - component: {fileID: 5742684372130524593}
   m_Layer: 7
   m_Name: EnemyBallerina
   m_TagString: Untagged
@@ -38,9 +38,10 @@ Transform:
   - {fileID: 2090533599100810358}
   - {fileID: 6723220469602183212}
   - {fileID: 5088564408228707811}
+  - {fileID: 6803439713290234782}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4000352510935394700
+--- !u!114 &4557740656623254548
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -49,14 +50,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1795686352570846225}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11a10d702b63bd64c86dcf4ea58ee6c8, type: 3}
+  m_Script: {fileID: 11500000, guid: 5f5fea5700a57f44d9d5a1895ad6b230, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerEntity
+  m_EditorClassIdentifier: Assembly-CSharp::Venice.Enemy
   FacingDirection: 1
   SurfaceNormal: {x: 0, y: 1, z: 0}
   SurfaceAngle: 0
   Rb: {fileID: 4453766238006023159}
-  SuspicionOnDeath: 25
   DeathTriggerName: Death
   DeadBoolName: Dead
   CollidersToDisableOnDeath: []
@@ -68,9 +68,10 @@ MonoBehaviour:
   IsInvincible: 0
   IsInIF: 0
   OOCTimer: 0
-  IFMaxTime: 5
+  IFMaxTime: 1
   IFTimer: 0
   InputLockType: 0
+  Team: 1
   PhysicsInfo: {fileID: 11400000, guid: 6200e12f130792745bce13394f1cbca5, type: 2}
   Attributes:
     MaxHealth: 0
@@ -82,6 +83,7 @@ MonoBehaviour:
     Grounded: 0
     Damaged: 0
     IsInSpotLight: 0
+    isAttacking: 0
     OnHealthChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -92,12 +94,12 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   Collision:
-    BallerinaEntity: {fileID: 0}
+    BallerinaEntity: {fileID: 4557740656623254548}
     GroundRayDistance: 0.6
     AirRayDistance: 0.6
     GroundMask:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 64
     MaxAngle: 60
   PlayerCollider: {fileID: 4718875074512123558}
   InputManager: {fileID: 8326835988463794670}
@@ -106,19 +108,13 @@ MonoBehaviour:
   HitLaunchHorizontalMultiplier: 1
   HitLaunchUpMultiplier: 0.35
   MaxHitLaunchSpeed: 15
---- !u!114 &5742684372130524593
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1795686352570846225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72e3f21955f22de4081ba4c81f317dc4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Venice.Hittable
-  KnockbackForce: 14
+  EnemyVisual: {fileID: 4715938878045391475}
+  GroundMask:
+    serializedVersion: 2
+    m_Bits: 64
+  GroundCheckDistance: 0.18
+  GroundCheckRadius: 0.4
+  GroundCheckPoint: {fileID: 6803439713290234782}
 --- !u!54 &4453766238006023159
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -145,19 +141,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 120
-  m_CollisionDetection: 1
---- !u!114 &4611502293182398924
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1795686352570846225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abd4a1340598faf4bba9547b88700a58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Venice.BallerinaStateMachine
+  m_CollisionDetection: 2
 --- !u!114 &9199957067459279601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170,9 +154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f929cb02b8c904f4987cdd8135fd79b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AIStateMachine
-  ControlledEntity: {fileID: 4000352510935394700}
+  ControlledEntity: {fileID: 4557740656623254548}
   AlertAllBallerinasOnHit: 1
-  SuspicionOnAggro: 10
   ArenaRange: 13
   WanderPointReachedDistance: 1.2
   WanderRetargetMinTime: 2
@@ -190,10 +173,21 @@ MonoBehaviour:
   DashImpulse: 7
   DashStartMaxDistance: 8
   DashAttackButtonTime: 0.15
+  DashWindUpDuration: 1
+  DashRecoveryDuration: 0.65
+  WindUpTurnSpeed: 8
+  WindUpBoolName: ChargingAttack
+  AttackTriggerName: Attack
   DirectlyPushPlayerOnDash: 1
   DashPushRadius: 1.6
   DashPushForce: 8
   DashPushUpForce: 1.5
+  CanRandomJump: 1
+  RandomJumpMinTime: 3
+  RandomJumpMaxTime: 6
+  JumpButtonPressTime: 0.12
+  JumpChanceWhenTimerEnds: 0.5
+  AIJumpSpeed: 12
 --- !u!114 &8326835988463794670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,8 +205,34 @@ MonoBehaviour:
   Axis2D: []
   BlockInput: 0
   CurrentMap: Player
-  Entity: {fileID: 4000352510935394700}
+  Entity: {fileID: 4557740656623254548}
   AIMachine: {fileID: 9199957067459279601}
+  aiMapName: AI
+--- !u!114 &4611502293182398924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1795686352570846225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abd4a1340598faf4bba9547b88700a58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Venice.BallerinaStateMachine
+--- !u!114 &5742684372130524593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1795686352570846225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72e3f21955f22de4081ba4c81f317dc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Venice.Hittable
+  KnockbackForce: 14
 --- !u!1 &4304532153279236875
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,7 +318,7 @@ SpriteRenderer:
   m_MaskInteraction: 2
   m_Sprite: {fileID: 1490209349, guid: 558a5160840ca8d40be40aa5c15cb719, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 2}
@@ -341,11 +361,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 235236974ae274249b5b4b6bfe3d0557, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Venice.BallerinaVisual
-  Entity: {fileID: 4000352510935394700}
+  Entity: {fileID: 4557740656623254548}
   parentObject: {fileID: 5516544638599745661}
   Animator: {fileID: 6742881060862864685}
   EntitySkin: {fileID: 5088564408228707811}
   Skin: {fileID: 3198359843136631104}
+--- !u!1 &6060623868339143721
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6803439713290234782}
+  m_Layer: 0
+  m_Name: Ground Check Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6803439713290234782
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6060623868339143721}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.091, y: -0.925, z: -0.32045007}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5516544638599745661}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7506236047450063539
 GameObject:
   m_ObjectHideFlags: 0

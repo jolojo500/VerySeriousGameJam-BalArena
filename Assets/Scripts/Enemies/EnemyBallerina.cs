@@ -1,37 +1,101 @@
-using UnityEditor.PackageManager;
 using UnityEngine;
-using Venice;
 
-public class EnemyBallerina : MonoBehaviour
+namespace Venice
 {
-    private Rigidbody _rb;
-    public EnemyVisual Visual;
-
-    private void Awake()
+    [RequireComponent(typeof(Rigidbody))]
+    public class EnemyBallerina : BallerinaEntity
     {
-        _rb = GetComponent<Rigidbody>();
-    }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+        [Header("Enemy Visual")]
+        public BallerinaVisual EnemyVisual;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    public void OnHit(HitInfo info)
-    {
-        Debug.Log("Ouch, I'm a ballerina!");
+        [Header("Enemy Ground Check")]
+        public LayerMask GroundMask;
+        public float GroundCheckDistance = 0.18f;
+        public float GroundCheckRadius = 0.28f;
+        public Transform GroundCheckPoint;
 
-        Vector3 dir = (transform.position - info.SourcePosition).normalized;
-        dir.y = 0f;
-        if (dir != Vector3.zero)
-            _rb.AddForce(dir.normalized * info.KnockbackForce, ForceMode.Impulse);
+        public override void Init()
+        {
+            base.Init();
 
-        _rb.AddForce(Vector3.up * info.KnockbackForce, ForceMode.Impulse);
-        Visual?.ApplySquashAndStretch(1.1f, .2f);
+            if (EnemyVisual == null)
+                EnemyVisual = Visual;
+
+            if (EnemyVisual == null)
+                EnemyVisual = GetComponentInChildren<BallerinaVisual>();
+
+            if (Attributes.MaxHealth <= 0)
+                Attributes.MaxHealth = 100;
+
+            if (Attributes.CurrentHealth <= 0)
+                Attributes.CurrentHealth = Attributes.MaxHealth;
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+        }
+
+        private void LateUpdate()
+        {
+            UpdateEnemyGrounded();
+        }
+
+        private void UpdateEnemyGrounded()
+        {
+            Vector3 origin;
+
+            if (GroundCheckPoint != null)
+            {
+                origin = GroundCheckPoint.position;
+            }
+            else if (PlayerCollider != null)
+            {
+                Bounds b = PlayerCollider.bounds;
+                origin = new Vector3(b.center.x, b.min.y + 0.05f, b.center.z);
+            }
+            else
+            {
+                origin = transform.position + Vector3.down * 0.9f;
+            }
+
+            bool grounded = Physics.CheckSphere(
+                origin,
+                GroundCheckRadius,
+                GroundMask,
+                QueryTriggerInteraction.Ignore
+            );
+
+            //Collision.Grounded = grounded;
+            Attributes.Grounded = grounded;
+        }
+
+        public override void OnHit(HitInfo info)
+        {
+            BallerinaEntity attacker = info.SourceEntity;
+
+            if (attacker != null && attacker.Team == Team)
+            {
+                Debug.Log($"Enemy ignored friendly hit from {attacker.name}");
+                return;
+            }
+
+            base.OnHit(info);
+
+            Debug.Log("Ouch, enemy ballerina was hit!");
+
+            Attributes.Damaged = true;
+
+            Vector3 dir = transform.position - info.SourcePosition;
+            dir.y = 0f;
+
+            if (Rb != null && dir.sqrMagnitude > 0.001f)
+                Rb.AddForce(dir.normalized * info.KnockbackForce, ForceMode.Impulse);
+
+            if (Rb != null)
+                Rb.AddForce(Vector3.up * info.KnockbackForce, ForceMode.Impulse);
+
+            EnemyVisual?.ApplySquashAndStretch(1.1f, 0.2f);
+        }
     }
 }

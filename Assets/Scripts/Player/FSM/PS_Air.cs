@@ -110,9 +110,18 @@ public class PS_Air : BallerinaState
 
     public override void OnUpdate()
     {
+        if (Input.GetButtonDown(GamePreference.AttackButton))
+        {
+            if (Attributes.CurrentSpin >= Entity.SpinKickCost)
+            {
+                Machine.Set<PS_Attack>();
+                return;
+            }
+        }
+
         if (IsJump && CanAscend)
         {
-            if(Entity.YSpeed > PhysicsInfo.JumpCutoff && Input.GetButtonUp(GamePreference.JumpButton))
+            if (Entity.YSpeed > PhysicsInfo.JumpCutoff && Input.GetButtonUp(GamePreference.JumpButton))
             {
                 CanAscend = false;
                 Entity.YSpeed = PhysicsInfo.JumpCutoff;

@@ -30,6 +30,7 @@ namespace Venice
         {
             SkinTransformUpdate();
             SetFloat("GroundSpeed", Mathf.Abs(Entity.HorizontalVelocity.magnitude));
+            SetBool("isAttacking", Entity.Attributes.isAttacking);
             SetBool("Grounded", Entity.Attributes.Grounded);
             SetBool("Damaged", Entity.Attributes.Damaged);
             SetFloat("XSpeed", Mathf.Abs(Entity.XSpeed));

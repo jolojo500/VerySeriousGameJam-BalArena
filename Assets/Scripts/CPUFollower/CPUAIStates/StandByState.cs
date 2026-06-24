@@ -4,7 +4,6 @@ public class StandByState : CPUAIState
 {
     private Vector3 targetPosition;
     private float retargetTimer;
-
     public override void OnEnter()
     {
         base.OnEnter();
@@ -14,6 +13,7 @@ public class StandByState : CPUAIState
 
     public override void OnUpdate()
     {
+        
         if (Entity == null)
             return;
 
@@ -22,7 +22,7 @@ public class StandByState : CPUAIState
             AIMachine.Set<HostileState>();
             return;
         }
-
+        HandleRandomJump();
         retargetTimer -= Time.deltaTime;
 
         Vector3 toTarget = targetPosition - Entity.transform.position;
