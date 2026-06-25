@@ -56,6 +56,7 @@ public class WaveManager : MonoBehaviour
     void Start()
     {
         StartAct(0);
+        GlobalVolumeEffects.Instance.PlayAct(0);
     }
 
     public void StartAct(int act)
@@ -216,7 +217,7 @@ public class WaveManager : MonoBehaviour
     void NextAct()
     {
         int nextAct = CurrentAct + 1;
-
+        GlobalVolumeEffects.Instance.PlayAct(nextAct);
         if (nextAct < Acts.Length)
         {
             StartAct(nextAct);

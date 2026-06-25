@@ -61,7 +61,6 @@ public class BallerinaEntity : Entity
     private float DeathArcTargetZOffset = -10f;
     private float DeathArcTargetY = -10f;
     private float DeathArcUpAmount = 2.5f;
-
     private bool MakeRigidbodyKinematicOnDeath = true;
     private AIStateMachine ai;
     public override void Init()
@@ -81,7 +80,6 @@ public class BallerinaEntity : Entity
         if (Machine != null)
             Machine.Init();
         ai = GetComponent<AIStateMachine>();
-        Attributes.MaxHealth = 3;
         Attributes.MaxSpin = 100;
         Attributes.MaxSuspicion = 100;
 
@@ -188,6 +186,14 @@ public class BallerinaEntity : Entity
 
         if (attacker != null && attacker.Team == Team)
             return;
+        if (Team == EntityTeam.Player)
+        {
+            GlobalVolumeEffects.Instance.PlayPlayerHurt();
+        }
+        else
+        {
+            GlobalVolumeEffects.Instance.PlayHitImpact();
+        }
         Instantiate(ParticleFx, transform.position, Quaternion.identity);
 
         if (ai == null)
@@ -218,6 +224,10 @@ public class BallerinaEntity : Entity
         if (!(this is Player))
         {
             WaveManager.Instance.EnemyKilled();
+        }
+        else
+        {
+            GameManager.Instance.EndGame();
         }
         IsDead = true;
         SoundEffectsManager.Instance.PlaySoundFXClip(SoundEffectsManager.soundEffects.Hit, gameObject.transform);

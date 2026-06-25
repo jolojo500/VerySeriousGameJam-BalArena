@@ -1,37 +1,42 @@
 using UnityEngine;
+using Venice;
 
 public class GameManager : MonoBehaviour
 {
 
     public static GameManager Instance;
-
-    public float ActDuration;
-    public float AudienceSuspicion;
-
-
-
+    public GameObject PauseScreen;
+    private bool gameEnded = false;
     private void Awake()
     {
+        gameEnded = false;
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
+            return;
         }
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-    }
 
+        Instance = this;
+    }   
+    private void Update()
+    {
+        if (GameInput.GetButtonDown("Pause"))
+            TogglePause();
+    }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void EndGame()
     {
-        
+        gameEnded = true;
+        GlobalVolumeEffects.Instance.PlayDeath();
+        MusicManager.Instance.audioSource.pitch = 0.5f;
+        SoundEffectsManager.Instance.volume = 0;
     }
-
-    // Update is called once per frame
-    void Update()
+    public void TogglePause()
     {
+        if (gameEnded) return;
+        bool isPaused = (Time.timeScale == 0f);
+        PauseScreen.SetActive(!isPaused);
+        Time.timeScale = isPaused ? 1f : 0f;
         
     }
 }

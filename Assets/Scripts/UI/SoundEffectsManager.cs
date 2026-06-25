@@ -12,6 +12,7 @@ public class SoundEffectsManager : MonoBehaviour
         Hit,
         Scream
     }
+    public float volume = 0.1f;
     public AudioClip[] audioClips;
     private void Awake()
     {
@@ -25,7 +26,7 @@ public class SoundEffectsManager : MonoBehaviour
     {
         AudioSource source = Instantiate(m_AudioSource, spawnTransform.position, Quaternion.identity);
         source.clip = audioClips[(int)effect];
-        source.volume = 0.1f;
+        source.volume = volume;
         source.Play();
         float clipLength = source.clip.length;
         Destroy(source.gameObject, clipLength);

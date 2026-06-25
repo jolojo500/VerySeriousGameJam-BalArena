@@ -80,9 +80,9 @@ namespace Venice
         }
         private void UpdateFacing()
         {
-            if (Entity.XSpeed > 0.3f)
+            if (Entity.XSpeed > 0.8f)
                 FacingDirection = 1;
-            else if (Entity.XSpeed < -0.3f)
+            else if (Entity.XSpeed < -0.8f)
                 FacingDirection = -1;
 
             Vector3 scale = parentObject.localScale;

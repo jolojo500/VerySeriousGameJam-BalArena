@@ -7,25 +7,20 @@ namespace Venice
     {
         [Header("Enemy Visual")]
         public BallerinaVisual EnemyVisual;
-
         [Header("Enemy Ground Check")]
         public LayerMask GroundMask;
         public float GroundCheckDistance = 0.18f;
         public float GroundCheckRadius = 0.28f;
         public Transform GroundCheckPoint;
-        public float healthPoints;
+
         public override void Init()
         {
             base.Init();
-
             if (EnemyVisual == null)
                 EnemyVisual = Visual;
 
             if (EnemyVisual == null)
                 EnemyVisual = GetComponentInChildren<BallerinaVisual>();
-
-            if (Attributes.MaxHealth <= 0)
-                Attributes.MaxHealth = healthPoints;
 
             if (Attributes.CurrentHealth <= 0)
                 Attributes.CurrentHealth = Attributes.MaxHealth;

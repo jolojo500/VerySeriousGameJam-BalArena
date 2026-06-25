@@ -116,11 +116,6 @@ public class HostileState : CPUAIState
 
         BallerinaEntity ballerina = Entity as BallerinaEntity;
 
-        if (ballerina != null && ballerina.Visual != null)
-        {
-            ballerina.Visual.SetBool(AIMachine.WindUpBoolName, true);
-        }
-
         Debug.Log("AI WINDING UP ATTACK");
     }
 
@@ -159,12 +154,6 @@ public class HostileState : CPUAIState
         );
 
         BallerinaEntity ballerina = Entity as BallerinaEntity;
-
-        if (ballerina != null && ballerina.Visual != null)
-        {
-            ballerina.Visual.SetBool(AIMachine.WindUpBoolName, false);
-            ballerina.Visual.SetTrigger(AIMachine.AttackTriggerName);
-        }
 
         FollowerCPU.SetAxis2DValue("Move", AIMachine.WorldDirectionToMoveInput(dashDirection));
         Entity.Attributes.isAttacking = true;
