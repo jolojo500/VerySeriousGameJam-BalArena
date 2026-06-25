@@ -66,15 +66,37 @@ namespace Venice
             {
                 if (input != Vector3.zero)
                 {
-                    if (velocity < PhysicsInfo.MaxSpeed) velocity = Mathf.Min(velocity + PhysicsInfo.Acceleration * Time.fixedDeltaTime, PhysicsInfo.MaxSpeed);
-                    velocityDirection = Vector3.Lerp(velocityDirection,
-                        input.normalized, PhysicsInfo.TurnRate * PhysicsInfo.TurnRateCurve.Evaluate(velocity) * Time.fixedDeltaTime).normalized;
-
-                    //velocity -= Mathf.Abs(Mathf.Sin(Vector3.Angle(velocityDirection, previousVelocityDirection) * Mathf.Deg2Rad)) * PhysicsInfo.SpeedLoss * Time.fixedDeltaTime * PhysicsInfo.SpeedLossCurve.Evaluate(velocity);
-
-                    if (Vector3.Dot(velocityDirection, input.normalized) < -0.85f)
+                    if (input != Vector3.zero)
                     {
-                        isSkidding = true;
+                        Vector3 targetDirection = input.normalized;
+
+                        if (velocity < PhysicsInfo.MaxSpeed)
+                        {
+                            velocity = Mathf.Min(
+                                velocity + PhysicsInfo.Acceleration * Time.fixedDeltaTime,
+                                PhysicsInfo.MaxSpeed
+                            );
+                        }
+
+                        float dot = Vector3.Dot(velocityDirection, targetDirection);
+
+                        // Hard reverse: left -> right or right -> left
+                        if (dot < -0.85f)
+                        {
+                            // Turn immediately, but keep most momentum.
+                            velocityDirection = targetDirection;
+
+                            // Optional small speed loss so it does not feel too instant.
+                            velocity *= 0.75f;
+                        }
+                        else
+                        {
+                            velocityDirection = Vector3.Lerp(
+                                velocityDirection,
+                                targetDirection,
+                                PhysicsInfo.TurnRate * PhysicsInfo.TurnRateCurve.Evaluate(velocity) * Time.fixedDeltaTime
+                            ).normalized;
+                        }
                     }
                 }
                 else

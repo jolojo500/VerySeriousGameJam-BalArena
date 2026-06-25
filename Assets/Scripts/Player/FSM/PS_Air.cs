@@ -56,44 +56,53 @@ public class PS_Air : BallerinaState
     private void AirMovement()
     {
         var input = CalculatedInputs;
+
         Rb.linearVelocity.Split(Vector3.up, out Vector3 vLat, out Vector3 vVer);
-        var previousVelocityDirection = vLat.normalized;
 
-        var velocity = vLat.magnitude;
-        var velocityDirection = velocity == 0 ? input.normalized : vLat.normalized;
-        if (!isSkidding)
+        float velocity = vLat.magnitude;
+        Vector3 velocityDirection = velocity <= 0.01f
+            ? input.normalized
+            : vLat.normalized;
+
+        if (input != Vector3.zero)
         {
-            if (input != Vector3.zero)
-            {
-                if (velocity < PhysicsInfo.MaxSpeed) velocity = Mathf.Min(velocity + PhysicsInfo.AirAcceleration * Time.fixedDeltaTime, PhysicsInfo.MaxSpeed);
-                velocityDirection = Vector3.Lerp(velocityDirection,
-                    input.normalized, PhysicsInfo.TurnRate * PhysicsInfo.TurnRateCurve.Evaluate(velocity) * Time.fixedDeltaTime / 6).normalized;
+            Vector3 targetDirection = input.normalized;
 
-                velocity -= Mathf.Abs(Mathf.Sin(Vector3.Angle(velocityDirection, previousVelocityDirection) * Mathf.Deg2Rad) * 5) * PhysicsInfo.SpeedLoss * Time.fixedDeltaTime * PhysicsInfo.SpeedLossCurve.Evaluate(velocity);
-
-                if (Vector3.Dot(velocityDirection, input.normalized) < -0.25f)
-                {
-                    isSkidding = true;
-                }
-            }
-        }
-        else
-        {
-            if (Vector3.Dot(velocityDirection, input.normalized) > -0.25f)
+            if (velocity < PhysicsInfo.MaxSpeed)
             {
-                isSkidding = false;
+                velocity = Mathf.Min(
+                    velocity + PhysicsInfo.AirAcceleration * Time.fixedDeltaTime,
+                    PhysicsInfo.MaxSpeed
+                );
             }
-            if (velocity > 0) velocity = Mathf.Max(velocity - PhysicsInfo.AirAcceleration * Time.fixedDeltaTime, 0);
+
+            float dot = Vector3.Dot(velocityDirection, targetDirection);
+
+            // If the player fully reverses in the air, flip direction but keep most speed.
+            if (dot < -0.85f)
+            {
+                velocityDirection = targetDirection;
+
+                // Air reverse speed loss. Raise this for more momentum preservation.
+                velocity *= 0.85f;
+            }
             else
             {
-                velocityDirection = input.normalized;
-                isSkidding = false;
+                float airTurnAmount =
+                    PhysicsInfo.TurnRate *
+                    PhysicsInfo.TurnRateCurve.Evaluate(velocity) *
+                    Time.fixedDeltaTime;
+
+                // Air control should be weaker than ground, but not /6.
+                airTurnAmount *= 0.5f;
+
+                velocityDirection = Vector3.Lerp(
+                    velocityDirection,
+                    targetDirection,
+                    airTurnAmount
+                ).normalized;
             }
-
-            if (input == Vector3.zero) isSkidding = false;
         }
-
-
 
         Rb.linearVelocity = velocityDirection * velocity + vVer;
         Rb.linearVelocity += Vector3.down * PhysicsInfo.Gravity * Time.fixedDeltaTime;

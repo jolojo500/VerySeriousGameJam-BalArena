@@ -33,7 +33,7 @@ public class SuspicionManager : MonoBehaviour
     public float SpotlightDuration = 15f;
 
     [Header("Random Spotlight Position")]
-    public Vector2 XRange = new Vector2(-13f, 13f);
+    public Vector2 XRange = new Vector2(-8f, 8f);
     public Vector2 ZRange = new Vector2(-13f, 13f);
     public float YPosition = 0.05f;
 

@@ -19,8 +19,8 @@ MonoBehaviour:
   TopSpeed: 10
   SlopeRepelDownHill: 70
   SlopeRepelUpHill: 30
-  TurnRate: 6
-  SpeedLoss: 1
+  TurnRate: 5
+  SpeedLoss: 0
   TurnRateCurve:
     serializedVersion: 2
     m_Curve:
