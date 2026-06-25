@@ -27,7 +27,7 @@ public class MusicManager : MonoBehaviour
 
     public void PlayActMusic(int n)
     {
-        StartCoroutine(SwapMusic(music[n], 0.5f));
+        StartCoroutine(SwapMusic(music[n], 0.3f));
     }
 
     IEnumerator SwapMusic(AudioClip newClip, float volume)

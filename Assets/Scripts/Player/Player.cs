@@ -3,8 +3,6 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using static UnityEditor.Profiling.RawFrameDataView;
-
 namespace Venice
 {
     public class Player : BallerinaEntity

@@ -20,7 +20,7 @@ namespace Venice
                 ExitSpin();
                 return;
             }
-
+            SoundEffectsManager.Instance.PlaySoundFXClip(SoundEffectsManager.soundEffects.Spin, Entity.transform);
             _timer = Attributes.SpinDuration;
 
             Attributes.isSpin = true;

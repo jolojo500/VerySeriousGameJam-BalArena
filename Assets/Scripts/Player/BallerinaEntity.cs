@@ -182,12 +182,12 @@ public class BallerinaEntity : Entity
 
     public virtual void OnHit(HitInfo hitInfo)
     {
-        Instantiate(ParticleFx, transform.position, Quaternion.identity);
+        
         BallerinaEntity attacker = hitInfo.SourceEntity;
 
         if (attacker != null && attacker.Team == Team)
             return;
-
+        Instantiate(ParticleFx, transform.position, Quaternion.identity);
         GetComponent<AIStateMachine>()?.AlertFromHit();
 
         if (IsDead || IsInvincible || IsInIF)
@@ -211,7 +211,8 @@ public class BallerinaEntity : Entity
             WaveManager.Instance.EnemyKilled();
         }
         IsDead = true;
-
+        SoundEffectsManager.Instance.PlaySoundFXClip(SoundEffectsManager.soundEffects.Hit, gameObject.transform);
+        SoundEffectsManager.Instance.PlaySoundFXClip(SoundEffectsManager.soundEffects.Scream, gameObject.transform);
         IsInIF = false;
         IFTimer = 0f;
         ToggleInvulnerability(0f);
@@ -260,6 +261,7 @@ public class BallerinaEntity : Entity
 
     private void Invulnerable()
     {
+        SoundEffectsManager.Instance.PlaySoundFXClip(SoundEffectsManager.soundEffects.Hit, gameObject.transform);
         IFTimer = IFMaxTime;
         IsInIF = true;
         ToggleInvulnerability(IFMaxTime);
