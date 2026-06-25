@@ -63,6 +63,7 @@ public class BallerinaEntity : Entity
     private float DeathArcUpAmount = 2.5f;
 
     private bool MakeRigidbodyKinematicOnDeath = true;
+    private AIStateMachine ai;
     public override void Init()
     {
         base.Init(); // Important: initialize Rb first
@@ -79,7 +80,7 @@ public class BallerinaEntity : Entity
         Machine = GetComponent<BallerinaStateMachine>();
         if (Machine != null)
             Machine.Init();
-        
+        ai = GetComponent<AIStateMachine>();
         Attributes.MaxHealth = 3;
         Attributes.MaxSpin = 100;
         Attributes.MaxSuspicion = 100;
@@ -188,7 +189,15 @@ public class BallerinaEntity : Entity
         if (attacker != null && attacker.Team == Team)
             return;
         Instantiate(ParticleFx, transform.position, Quaternion.identity);
-        GetComponent<AIStateMachine>()?.AlertFromHit();
+
+        if (ai == null)
+            ai = GetComponentInChildren<AIStateMachine>();
+
+        if (ai == null)
+            ai = GetComponentInParent<AIStateMachine>();
+
+        if (ai != null)
+            ai.AlertFromHit();
 
         if (IsDead || IsInvincible || IsInIF)
             return;

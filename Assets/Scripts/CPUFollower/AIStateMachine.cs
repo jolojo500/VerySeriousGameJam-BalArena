@@ -1,7 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Venice;
-
+public enum AIStartMode
+{
+    WanderUntilHit,
+    HostileByDefault
+}   
 public class AIStateMachine : StateMachine<CPUAIState>
 {
     private static readonly List<AIStateMachine> AllBallerinaAIs = new();
@@ -62,6 +66,10 @@ public class AIStateMachine : StateMachine<CPUAIState>
     public float DefaultStunDuration = 0.45f;
     private float stunTimer;
     public bool IsStunned => stunTimer > 0f;
+    
+    [Header("Aggro")]
+    public AIStartMode StartMode = AIStartMode.WanderUntilHit;
+
     private void Awake()
     {
         CPUInput = GetComponent<CPUInputManager>();
@@ -111,7 +119,16 @@ public class AIStateMachine : StateMachine<CPUAIState>
         Add(new HostileState());
         Add(new RunAwayState());
 
-        Initialize<StandByState>();
+        if (StartMode == AIStartMode.HostileByDefault)
+        {
+            IsAggressive = true;
+            Initialize<HostileState>();
+        }
+        else
+        {
+            IsAggressive = false;
+            Initialize<StandByState>();
+        }
     }
 
     public override void Add(CPUAIState state)
@@ -142,6 +159,17 @@ public class AIStateMachine : StateMachine<CPUAIState>
     public void AlertFromHit()
     {
         Alert(false);
+
+        if (!AlertAllBallerinasOnHit)
+            return;
+
+        foreach (AIStateMachine ai in AllBallerinaAIs)
+        {
+            if (ai == null || ai == this)
+                continue;
+
+            ai.Alert(true);
+        }
     }
 
     private void Alert(bool fromAlly)

@@ -121,6 +121,7 @@ MonoBehaviour:
   GroundCheckDistance: 0.18
   GroundCheckRadius: 0.4
   GroundCheckPoint: {fileID: 6803439713290234782}
+  healthPoints: 1
 --- !u!54 &4453766238006023159
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -161,7 +162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AIStateMachine
   ControlledEntity: {fileID: 4557740656623254548}
-  AlertAllBallerinasOnHit: 1
+  AlertAllBallerinasOnHit: 0
   ArenaRange: 13
   WanderPointReachedDistance: 1.2
   WanderRetargetMinTime: 2
@@ -195,6 +196,7 @@ MonoBehaviour:
   JumpChanceWhenTimerEnds: 0.5
   AIJumpSpeed: 12
   DefaultStunDuration: 0.65
+  StartMode: 0
 --- !u!114 &8326835988463794670
 MonoBehaviour:
   m_ObjectHideFlags: 0
