@@ -17,8 +17,10 @@ public class ActData
 {
     public string ActName = "Act";
 
-    [Header("Act bjects")]
+    [Header("Act objects")]
     public GameObject Props;
+    public Material floor;
+    public Color floor_color;
 
     [Header("Act Rules")]
     public int TotalEnemiesInAct = 20;
@@ -32,7 +34,6 @@ public class ActData
 public class WaveManager : MonoBehaviour
 {
     public static WaveManager Instance;
-
     [Header("Acts")]
     public int CurrentAct = 0;
     public ActData[] Acts;
@@ -156,6 +157,7 @@ public class WaveManager : MonoBehaviour
         }
 
         Transform point = SpawnPoints[Random.Range(0, SpawnPoints.Length)];
+        point.position = new Vector3(point.position.x, point.position.y, Random.Range(-0.1f, 0.1f));
 
         GameObject enemy = Instantiate(
             prefab,
@@ -289,7 +291,12 @@ public class WaveManager : MonoBehaviour
         // hide act transition panel
         if (transitionPanel != null)
             transitionPanel.SetActive(false);
-
+        for (int i = 0; i < Acts.Length; i++)
+        {
+            if (Acts[i] != null && Acts[i].Props != null)
+                Acts[i].Props.SetActive(i == actToStart);
+        }
+        SetMaterialColor(Acts[actToStart].floor, Acts[actToStart].floor_color);
         // open curtains
         if (CurtainController != null)
         {
@@ -365,4 +372,22 @@ public class WaveManager : MonoBehaviour
         if (NeoInputManager.Instance != null)
             NeoInputManager.Instance.BlockInput = false;
     }
+    void SetMaterialColor(Material mat, Color color)
+    {
+        // URP Lit shader usually uses _BaseColor
+        if (mat.HasProperty("_BaseColor"))
+        {
+            mat.SetColor("_BaseColor", color);
+        }
+        // Standard shader usually uses _Color
+        else if (mat.HasProperty("_Color"))
+        {
+            mat.SetColor("_Color", color);
+        }
+        else
+        {
+            Debug.LogWarning($"{mat.name} does not have _BaseColor or _Color.");
+        }
+    }
+
 }

@@ -59,7 +59,8 @@ MonoBehaviour:
   SurfaceAngle: 0
   Rb: {fileID: 4453766238006023159}
   DeathBoolName: Death
-  CollidersToDisableOnDeath: []
+  CollidersToDisableOnDeath:
+  - {fileID: 4718875074512123558}
   FreezeRigidbodyOnDeath: 1
   InputDisableTimer: 0
   DefinitiveInputLock: 0

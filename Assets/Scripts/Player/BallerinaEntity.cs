@@ -58,9 +58,9 @@ public class BallerinaEntity : Entity
     private float DeathArcDuration = 0.6f;
     private bool RandomizeDeathArcX = true;
     private float DeathArcRandomXRange = 5f;
-    private float DeathArcTargetZOffset = -10f;
+    public float DeathArcTargetZOffset = -20f;
     private float DeathArcTargetY = -10f;
-    private float DeathArcUpAmount = 2.5f;
+    private float DeathArcUpAmount = 4.5f;
     private bool MakeRigidbodyKinematicOnDeath = true;
     private AIStateMachine ai;
     public override void Init()
