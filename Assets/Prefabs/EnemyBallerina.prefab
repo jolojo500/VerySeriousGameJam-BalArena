@@ -195,7 +195,7 @@ MonoBehaviour:
   JumpChanceWhenTimerEnds: 0.5
   AIJumpSpeed: 12
   DefaultStunDuration: 0.65
-  StartMode: 1
+  StartMode: 0
 --- !u!114 &8326835988463794670
 MonoBehaviour:
   m_ObjectHideFlags: 0

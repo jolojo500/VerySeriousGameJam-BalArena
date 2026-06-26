@@ -16,7 +16,8 @@ public class SuspicionManager : MonoBehaviour
     public Player Player;
     public SuspicionZone Zone;
     public AudioSource whisper;
-    public Animator animator;
+    public Animator animator1;
+    public Animator animator2;
 
     [Header("Lights")]
     public List<GameObject> NormalLights = new List<GameObject>();
@@ -112,7 +113,8 @@ public class SuspicionManager : MonoBehaviour
         PlayerIsInsideZone = false;
         ExclamationMark.SetActive(false);
         whisper.Stop();
-        animator.SetBool("sus",false);
+        animator1.SetBool("sus",false);
+        animator2.SetBool("sus", false);
         Debug.Log("Normal lights phase started.");
     }
 
@@ -132,7 +134,8 @@ public class SuspicionManager : MonoBehaviour
         if (Zone != null)
             Zone.SetActive(true);
         whisper.Play();
-        animator.SetBool("sus", true);
+        animator1.SetBool("sus", true);
+        animator2.SetBool("sus", true);
         Player.Attributes.CurrentSuspicion = 0;
         Debug.Log("Spotlight phase started.");
     }
