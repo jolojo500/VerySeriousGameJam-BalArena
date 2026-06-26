@@ -61,7 +61,6 @@ public class SuspicionManager : MonoBehaviour
             Player.Attributes.MaxSuspicion = MaxSuspicion;
             Player.Attributes.AddToSuspicion(-9999f);
         }
-
         StartNormalLightsPhase();
     }
 
@@ -74,7 +73,6 @@ public class SuspicionManager : MonoBehaviour
             return;
 
         PhaseTimer -= Time.deltaTime;
-
         if (currentPhase == SuspicionPhase.NormalLights)
         {
             if (PhaseTimer <= 0f)

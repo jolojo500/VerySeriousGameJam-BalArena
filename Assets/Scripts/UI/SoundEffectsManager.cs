@@ -10,7 +10,10 @@ public class SoundEffectsManager : MonoBehaviour
     {
         Spin,
         Hit,
-        Scream
+        Scream,
+        Cheer,
+        CurtainOpen,
+        CurtainClose
     }
     public float volume = 0.1f;
     public AudioClip[] audioClips;

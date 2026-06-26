@@ -20,7 +20,7 @@ public class DoubleCurtainController : MonoBehaviour
     public float openDuration = 6f;
     public float closeDuration = 6f;
 
-    bool isOpen = false;
+    public bool isOpen = false;
     bool isAnimating = false;
 
     void Start()
@@ -37,14 +37,6 @@ public class DoubleCurtainController : MonoBehaviour
         rightClosePlayer.CurrentTime = 0f;
     }
 
-    void OnGUI()
-    {
-        if (GUI.Button(new Rect(20, 20, 200, 50), isOpen ? "Close Curtains" : "Open Curtains"))
-        {
-            ToggleCurtain();
-        }
-    }
-
     public void ToggleCurtain()
     {
         if (isAnimating) return;
@@ -55,10 +47,10 @@ public class DoubleCurtainController : MonoBehaviour
             StartCoroutine(PlayOpen());
     }
 
-    IEnumerator PlayOpen()
+    public IEnumerator PlayOpen()
     {
         isAnimating = true;
-
+        SoundEffectsManager.Instance.PlaySoundFXClip(SoundEffectsManager.soundEffects.CurtainOpen, gameObject.transform);
         leftCloseModel.SetActive(false);
         rightCloseModel.SetActive(false);
 
@@ -86,10 +78,10 @@ public class DoubleCurtainController : MonoBehaviour
         isAnimating = false;
     }
 
-    IEnumerator PlayClose()
+    public IEnumerator PlayClose()
     {
         isAnimating = true;
-
+        SoundEffectsManager.Instance.PlaySoundFXClip(SoundEffectsManager.soundEffects.CurtainClose, gameObject.transform);
         leftOpenModel.SetActive(false);
         rightOpenModel.SetActive(false);
 

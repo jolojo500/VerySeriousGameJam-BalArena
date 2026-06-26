@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Venice;
 
 [System.Serializable]
 public class EnemySpawnPercent
@@ -15,6 +16,9 @@ public class EnemySpawnPercent
 public class ActData
 {
     public string ActName = "Act";
+
+    [Header("Act bjects")]
+    public GameObject Props;
 
     [Header("Act Rules")]
     public int TotalEnemiesInAct = 20;
@@ -43,6 +47,17 @@ public class WaveManager : MonoBehaviour
     [SerializeField] private int enemiesKilledThisAct;
     [SerializeField] private float actTimer;
 
+    [Header("Act Transition")]
+    public DoubleCurtainController CurtainController;
+
+    public GameObject[] ActTransitionPanels;
+
+    public float TransitionPanelWaitTime = 5f;
+
+    [Header("Freeze Gameplay During Transition")]
+    public MonoBehaviour[] ScriptsToDisableDuringTransition;
+    public Rigidbody[] RigidbodiesToFreezeDuringTransition;
+
     private readonly List<GameObject> activeEnemies = new List<GameObject>();
 
     private Coroutine actCoroutine;
@@ -52,11 +67,11 @@ public class WaveManager : MonoBehaviour
     {
         Instance = this;
     }
-
     void Start()
     {
-        StartAct(0);
-        GlobalVolumeEffects.Instance.PlayAct(0);
+        HideAllTransitionPanels();
+
+        StartCoroutine(StartActWithTransitionRoutine(0));
     }
 
     public void StartAct(int act)
@@ -196,8 +211,6 @@ public class WaveManager : MonoBehaviour
         activeEnemies.RemoveAll(e => e == null);
         enemiesAlive = activeEnemies.Count;
     }
-
-    // Optional old version, in case some code already calls EnemyKilled()
     public void EnemyKilled()
     {
         EnemyKilled(null);
@@ -211,7 +224,9 @@ public class WaveManager : MonoBehaviour
 
         ClearRemainingEnemies();
 
-        NextAct();
+        int nextAct = CurrentAct + 1;
+
+        StartCoroutine(StartActWithTransitionRoutine(nextAct));
     }
 
     void NextAct()
@@ -243,5 +258,111 @@ public class WaveManager : MonoBehaviour
     void SpawnBoss()
     {
         Debug.Log("GINGERBREAD KING");
+    }
+    IEnumerator StartActWithTransitionRoutine(int actToStart)
+    {
+        MusicManager.Instance.StopAllMusicWithFade();
+        GlobalVolumeEffects.Instance.PlayAct(actToStart);
+        FreezeGameplay();
+
+        // close curtains
+        if (CurtainController != null && CurtainController.isOpen)
+        {
+            SoundEffectsManager.Instance.PlaySoundFXClip(SoundEffectsManager.soundEffects.Cheer, gameObject.transform);
+            StartCoroutine(CurtainController.PlayClose());
+            yield return new WaitForSeconds(TransitionPanelWaitTime);
+        }
+
+        // show act transition panel
+        GameObject transitionPanel = null;
+
+        if (ActTransitionPanels != null && actToStart < ActTransitionPanels.Length)
+        {
+            transitionPanel = ActTransitionPanels[actToStart];
+
+            if (transitionPanel != null)
+                transitionPanel.SetActive(true);
+        }
+
+        yield return new WaitForSeconds(TransitionPanelWaitTime);
+
+        // hide act transition panel
+        if (transitionPanel != null)
+            transitionPanel.SetActive(false);
+
+        // open curtains
+        if (CurtainController != null)
+        {
+            StartCoroutine(CurtainController.PlayOpen());
+            yield return new WaitForSeconds(TransitionPanelWaitTime);
+        }
+        MusicManager.Instance.PlayActMusic(actToStart);
+        UnfreezeGameplay();
+        
+        // start act after transition is fully finished
+        if (actToStart < Acts.Length-1)
+        {            
+            StartAct(actToStart);
+        }
+        else
+        {
+            SpawnBoss();
+        }
+    }
+    void HideAllTransitionPanels()
+    {
+        if (ActTransitionPanels == null)
+            return;
+
+        foreach (GameObject panel in ActTransitionPanels)
+        {
+            if (panel != null)
+                panel.SetActive(false);
+        }
+    }
+    void FreezeGameplay()
+    {
+        // Block custom player input
+        if (NeoInputManager.Instance != null)
+            NeoInputManager.Instance.BlockInput = true;
+
+        // Disable gameplay scripts
+        foreach (MonoBehaviour script in ScriptsToDisableDuringTransition)
+        {
+            if (script != null)
+                script.enabled = false;
+        }
+
+        // Freeze rigidbodies
+        foreach (Rigidbody rb in RigidbodiesToFreezeDuringTransition)
+        {
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.isKinematic = true;
+            }
+        }
+    }
+
+    void UnfreezeGameplay()
+    {
+        // Re-enable gameplay scripts
+        foreach (MonoBehaviour script in ScriptsToDisableDuringTransition)
+        {
+            if (script != null)
+                script.enabled = true;
+        }
+
+        // Unfreeze rigidbodies
+        foreach (Rigidbody rb in RigidbodiesToFreezeDuringTransition)
+        {
+            if (rb != null)
+                rb.isKinematic = false;
+        }
+
+        // Unblock custom player input
+        if (NeoInputManager.Instance != null)
+            NeoInputManager.Instance.BlockInput = false;
     }
 }
