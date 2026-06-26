@@ -166,6 +166,7 @@ GameObject:
   - component: {fileID: 74426193}
   - component: {fileID: 74426192}
   - component: {fileID: 74426191}
+  - component: {fileID: 74426194}
   m_Layer: 0
   m_Name: CreditsButton
   m_TagString: Untagged
@@ -189,7 +190,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000030517578, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &74426191
@@ -274,6 +275,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 74426189}
   m_CullTransparentMesh: 1
+--- !u!114 &74426194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 74426189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe4cd3bda14e5f5428b5c081bde9c68a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AlphaButtonClick
+  alphaThreshold: 0.1
 --- !u!1 &86718166
 GameObject:
   m_ObjectHideFlags: 0
@@ -602,6 +616,7 @@ GameObject:
   - component: {fileID: 1215625917}
   - component: {fileID: 1215625916}
   - component: {fileID: 1215625915}
+  - component: {fileID: 1215625918}
   m_Layer: 0
   m_Name: StartButton
   m_TagString: Untagged
@@ -710,6 +725,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1215625913}
   m_CullTransparentMesh: 1
+--- !u!114 &1215625918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1215625913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe4cd3bda14e5f5428b5c081bde9c68a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AlphaButtonClick
+  alphaThreshold: 0.1
 --- !u!1 &1328622183
 GameObject:
   m_ObjectHideFlags: 0
@@ -1106,6 +1134,7 @@ GameObject:
   - component: {fileID: 1979815947}
   - component: {fileID: 1979815946}
   - component: {fileID: 1979815945}
+  - component: {fileID: 1979815948}
   m_Layer: 0
   m_Name: SettingsButton
   m_TagString: Untagged
@@ -1129,7 +1158,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000030517578, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1979815945
@@ -1214,6 +1243,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1979815943}
   m_CullTransparentMesh: 1
+--- !u!114 &1979815948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979815943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe4cd3bda14e5f5428b5c081bde9c68a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AlphaButtonClick
+  alphaThreshold: 0.1
 --- !u!1 &1989047179
 GameObject:
   m_ObjectHideFlags: 0
@@ -1354,6 +1396,7 @@ GameObject:
   - component: {fileID: 2031007011}
   - component: {fileID: 2031007010}
   - component: {fileID: 2031007009}
+  - component: {fileID: 2031007012}
   m_Layer: 0
   m_Name: LeaveButton
   m_TagString: Untagged
@@ -1377,7 +1420,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000030517578, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2031007009
@@ -1462,6 +1505,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2031007007}
   m_CullTransparentMesh: 1
+--- !u!114 &2031007012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2031007007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe4cd3bda14e5f5428b5c081bde9c68a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AlphaButtonClick
+  alphaThreshold: 0.1
 --- !u!1 &2038787133
 GameObject:
   m_ObjectHideFlags: 0
