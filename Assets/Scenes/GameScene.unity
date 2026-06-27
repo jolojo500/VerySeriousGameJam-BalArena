@@ -6809,17 +6809,16 @@ MonoBehaviour:
   Acts:
   - ActName: Act 1
     Props: {fileID: 2768213713954299741}
-    floor: {fileID: 2100000, guid: 05657c78a5f47ca439b1ef90b8e7c4b7, type: 2}
+    floor: {fileID: 2100000, guid: efddda563df866c4cbbca3a8759784a2, type: 2}
     floor_color: {r: 0.06648272, g: 0.16981131, b: 0.083620876, a: 0}
-    TotalEnemiesInAct: 30
-    MaxEnemiesAlive: 6
+    TotalEnemiesInAct: 12
+    MaxEnemiesAlive: 8
     ActDuration: 114
+    SpawnDelay: 3
     SpawnTable:
     - EnemyPrefab: {fileID: 1795686352570846225, guid: 8f7fcef2a962d284c945e163f5202667, type: 3}
-      SpawnPercent: 80
+      SpawnPercent: 90
     - EnemyPrefab: {fileID: 5507302954634058093, guid: 619e33ab724982f41a85474131fd3320, type: 3}
-      SpawnPercent: 10
-    - EnemyPrefab: {fileID: 9192756756844829086, guid: 1d1ce59b1b2a99247bff78dcd51e7410, type: 3}
       SpawnPercent: 10
     BossPrefab: {fileID: 0}
     BossSpawnPoint: {fileID: 0}
@@ -6827,29 +6826,33 @@ MonoBehaviour:
     BossSpawnDelay: 20
   - ActName: Act 2
     Props: {fileID: 6502424104590249921}
-    floor: {fileID: 2100000, guid: 05657c78a5f47ca439b1ef90b8e7c4b7, type: 2}
+    floor: {fileID: 2100000, guid: efddda563df866c4cbbca3a8759784a2, type: 2}
     floor_color: {r: 0.12941177, g: 0.07058824, b: 0.06666667, a: 1}
-    TotalEnemiesInAct: 40
-    MaxEnemiesAlive: 5
+    TotalEnemiesInAct: 30
+    MaxEnemiesAlive: 8
     ActDuration: 105
+    SpawnDelay: 2
     SpawnTable:
     - EnemyPrefab: {fileID: 1795686352570846225, guid: 8f7fcef2a962d284c945e163f5202667, type: 3}
       SpawnPercent: 50
     - EnemyPrefab: {fileID: 5507302954634058093, guid: 619e33ab724982f41a85474131fd3320, type: 3}
-      SpawnPercent: 25
+      SpawnPercent: 35
     - EnemyPrefab: {fileID: 9192756756844829086, guid: 1d1ce59b1b2a99247bff78dcd51e7410, type: 3}
-      SpawnPercent: 25
+      SpawnPercent: 10
+    - EnemyPrefab: {fileID: 2828223254033988693, guid: 97b24e92afe2c7c44b3048c250493e93, type: 3}
+      SpawnPercent: 5
     BossPrefab: {fileID: 0}
     BossSpawnPoint: {fileID: 0}
     SpawnBossInThisAct: 0
     BossSpawnDelay: 20
   - ActName: Act 3
     Props: {fileID: 7278755626079176741}
-    floor: {fileID: 2100000, guid: 05657c78a5f47ca439b1ef90b8e7c4b7, type: 2}
+    floor: {fileID: 2100000, guid: efddda563df866c4cbbca3a8759784a2, type: 2}
     floor_color: {r: 0.23584908, g: 0.094562136, b: 0.094562136, a: 0}
-    TotalEnemiesInAct: 150
-    MaxEnemiesAlive: 6
+    TotalEnemiesInAct: 30
+    MaxEnemiesAlive: 4
     ActDuration: 136
+    SpawnDelay: 1
     SpawnTable:
     - EnemyPrefab: {fileID: 2828223254033988693, guid: 97b24e92afe2c7c44b3048c250493e93, type: 3}
       SpawnPercent: 100
@@ -6878,6 +6881,8 @@ MonoBehaviour:
   PlayerTransform: {fileID: 2690208479493306649}
   PlayerResetPosition: {x: 0, y: 0, z: 0}
   PlayerResetGlideDuration: 0.75
+  WinPanelWaitTime: 5
+  KeepGameplayFrozenAfterWin: 1
 --- !u!1 &234397134
 GameObject:
   m_ObjectHideFlags: 0
@@ -16072,6 +16077,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 771296bab159e9a498d054c1aef12a3f, type: 3}
   - {fileID: 8300000, guid: ece7fd063000bf64b9a08a175eb2348e, type: 3}
   - {fileID: 8300000, guid: 756bdeb1238e9ce41a46caad220a5e4e, type: 3}
+  targetVolume: 1
 --- !u!1 &501516228
 GameObject:
   m_ObjectHideFlags: 0
@@ -40671,10 +40677,10 @@ MonoBehaviour:
   SpotlightObject: {fileID: 6820089403013907224}
   ExclamationMark: {fileID: 420332946}
   MaxSuspicion: 100
-  SuspicionRiseRate: 8
+  SuspicionRiseRate: 12
   SuspicionDecreaseRate: 18
-  NormalLightsDuration: 5
-  SpotlightDuration: 15
+  NormalLightsDuration: 10
+  SpotlightDuration: 12
   XRange: {x: -8, y: 8}
   ZRange: {x: 1.5, y: 1.5}
   YPosition: 6
@@ -41234,7 +41240,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundEffectsManager
   m_AudioSource: {fileID: 1353403889}
-  volume: 0.1
+  volume: 0.6
   audioClips:
   - {fileID: 8300000, guid: 5b3ecd2729b4bad44ad98760a68f0d35, type: 3}
   - {fileID: 8300000, guid: 4f0e7579f5ac3a0498904d65cfe57d09, type: 3}
@@ -65028,8 +65034,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 4, y: 1, z: 6.268682}
-  m_Center: {x: -0.027187347, y: -1.4179806e-15, z: -1.900218}
+  m_Size: {x: 4, y: 1, z: 10.612262}
+  m_Center: {x: -0.027187347, y: 1.0233242e-15, z: -4.072009}
 --- !u!4 &320243987740566234
 Transform:
   m_ObjectHideFlags: 0
@@ -66867,7 +66873,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4794373472839508919}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: a6430bc5136ae1b45a798152722cbc49, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -77972,7 +77978,7 @@ MonoBehaviour:
     SpinDuration: 0.65
     SpinCooldown: 2
     SpinUpwardBurstSpeed: 2
-    SpinChargePerSecond: 50
+    SpinChargePerSecond: 40
     NextSpinAllowedTime: 0
     Grounded: 0
     Damaged: 0
@@ -78013,6 +78019,7 @@ MonoBehaviour:
     MinimumEnergyToKick: 25
     EnergySpentPerKick: 25
     Tier25:
+      EnergyCost: 20
       Damage: 1
       KnockbackForce: 2
       HitFreezeLength: 0.06
@@ -78023,6 +78030,7 @@ MonoBehaviour:
       ImpactSoundVolume: 0.6
       EnemyLaunchHeight: 1.5
     Tier50:
+      EnergyCost: 25
       Damage: 1
       KnockbackForce: 4
       HitFreezeLength: 0.09
@@ -78033,6 +78041,7 @@ MonoBehaviour:
       ImpactSoundVolume: 0.75
       EnemyLaunchHeight: 2.5
     Tier75:
+      EnergyCost: 30
       Damage: 2
       KnockbackForce: 6
       HitFreezeLength: 0.12
@@ -78043,6 +78052,7 @@ MonoBehaviour:
       ImpactSoundVolume: 0.9
       EnemyLaunchHeight: 3.5
     Tier100:
+      EnergyCost: 40
       Damage: 3
       KnockbackForce: 8
       HitFreezeLength: 0.16
@@ -81508,9 +81518,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1cc7f691baaa24caef26873fda634c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayAlembicCurtain
-  startTime: 0.04166
-  endTime: 10.4167
-  speed: 1
 --- !u!23 &7736344505913938723
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -82201,9 +82208,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1cc7f691baaa24caef26873fda634c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayAlembicCurtain
-  startTime: 0.04166
-  endTime: 10.4167
-  speed: 1
 --- !u!33 &8234969874882863791
 MeshFilter:
   m_ObjectHideFlags: 0

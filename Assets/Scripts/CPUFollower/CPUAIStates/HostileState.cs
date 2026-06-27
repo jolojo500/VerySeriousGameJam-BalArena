@@ -21,10 +21,13 @@ public class HostileState : CPUAIState
 
     private Vector3 dashDirection;
     private bool pushedPlayerThisDash;
+    private bool holdingPositionNearPlayer;
     public override void OnEnter()
     {
         base.OnEnter();
         phase = AttackPhase.Chasing;
+
+        holdingPositionNearPlayer = false;
 
         dashCooldownTimer = Random.Range(0.5f, 1.2f);
         windUpTimer = 0f;
@@ -80,29 +83,47 @@ public class HostileState : CPUAIState
         dashCooldownTimer -= Time.deltaTime;
 
         bool canAttack = dashCooldownTimer <= 0f;
-        bool closeEnough = distanceToPlayer <= AIMachine.DashStartMaxDistance;
+        bool closeEnoughToAttack = distanceToPlayer <= AIMachine.DashStartMaxDistance;
 
-        if (canAttack && closeEnough)
+        if (canAttack && closeEnoughToAttack)
         {
             StartWindUp(toPlayer);
             return;
         }
 
+        if (AIMachine.StopMovingWhenCloseToPlayer)
+        {
+            if (!holdingPositionNearPlayer && distanceToPlayer <= AIMachine.StopMovingDistance)
+            {
+                holdingPositionNearPlayer = true;
+            }
+            else if (holdingPositionNearPlayer && distanceToPlayer >= AIMachine.ResumeMovingDistance)
+            {
+                holdingPositionNearPlayer = false;
+            }
+
+            if (holdingPositionNearPlayer)
+            {
+                FollowerCPU.SetAxis2DValue("Move", Vector2.zero);
+                FollowerCPU.SetButtonState("Attack", false);
+
+                if (AIMachine.ZeroVelocityWhenStopped && Entity != null)
+                {
+                    Entity.SetHorizontalVelocity(Vector3.zero);
+                }
+
+                return;
+            }
+        }
+
         Vector3 separation = AIMachine.GetSeparationVector() * AIMachine.AggressiveSeparationWeight;
 
-        Vector3 moveDirection = Vector3.zero;
-
-        if (distanceToPlayer > 1.5f)
-            moveDirection += toPlayer;
-        else
-            moveDirection -= toPlayer * 0.5f;
-
+        Vector3 moveDirection = toPlayer;
         moveDirection += separation * 0.5f;
 
         FollowerCPU.SetAxis2DValue("Move", AIMachine.WorldDirectionToMoveInput(moveDirection));
         FollowerCPU.SetButtonState("Attack", false);
     }
-
     private void StartWindUp(Vector3 directionToPlayer)
     {
         phase = AttackPhase.WindUp;

@@ -14,7 +14,7 @@ public class MusicManager : MonoBehaviour
     public AudioClip[] music;
 
     private Coroutine musicCoroutine;
-    private float targetVolume = 0.3f;
+    public float targetVolume = 0.3f;
 
     private void Awake()
     {
@@ -37,7 +37,7 @@ public class MusicManager : MonoBehaviour
             return;
         }
 
-        PlayMusic(music[n], 0.3f);
+        PlayMusic(music[n], targetVolume);
     }
 
     public void PlayMusic(AudioClip clip, float volume)

@@ -8,7 +8,8 @@ public class SceneLoader : MonoBehaviour
     public static int gameVolume = 1;
     public static bool cameraShake = true;
     public static SceneLoader Instance;
-
+    public static bool gameLost;
+    public static bool wasPassive;
     [SerializeField] private Image fadeImage;
     [SerializeField] private float fadeDuration = 0.8f;
 
@@ -22,6 +23,7 @@ public class SceneLoader : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        wasPassive = true;
     }
 
     private void Start()

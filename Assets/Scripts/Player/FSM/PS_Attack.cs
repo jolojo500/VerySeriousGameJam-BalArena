@@ -23,25 +23,33 @@ namespace Venice
         {
             _hitThisSwing.Clear();
 
-            _player = Entity as Player;
-            _isPlayerKick = _player != null;
+            _isPlayerKick = false;
+            _player = null;
+            _kickTier = default;
 
-            if (_isPlayerKick)
+            Player player = Entity as Player;
+
+            if (player != null)
             {
-                bool hasEnergy = _player.KickEnergyTiers.TryGetTier(
-                    Attributes.CurrentSpin,
-                    Attributes.MaxSpin,
-                    out _kickTier
-                );
-
-                if (!hasEnergy)
+                if (!player.KickEnergyTiers.TryGetTier(
+                    player.Attributes.CurrentSpin,
+                    player.Attributes.MaxSpin,
+                    out PlayerKickTier tier))
                 {
                     ExitAttackImmediately();
                     return;
                 }
 
-                float energyCost = _player.KickEnergyTiers.GetEnergyCost(Attributes.CurrentSpin);
-                Attributes.AddToSpin(-energyCost);
+                _isPlayerKick = true;
+                _player = player;
+                _kickTier = tier;
+
+                float cost = player.KickEnergyTiers.GetEnergyCost(
+                    _kickTier,
+                    player.Attributes.CurrentSpin
+                );
+
+                player.Attributes.AddToSpin(-cost);
             }
 
             Entity.Attributes.isAttacking = true;

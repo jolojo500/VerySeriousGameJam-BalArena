@@ -163,6 +163,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AIStateMachine
   ControlledEntity: {fileID: 6733653785153643231}
+  DefaultSpriteLibrary: {fileID: 2752317246277982155}
+  AgressiveSpriteLibrary: {fileID: 7108339969198208228, guid: 01e7cf2824f7c8f47ac2d844ff9a6487, type: 3}
   AlertAllBallerinasOnHit: 0
   ArenaRange: 13
   WanderPointReachedDistance: 1.2

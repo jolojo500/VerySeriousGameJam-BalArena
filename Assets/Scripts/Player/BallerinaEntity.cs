@@ -200,6 +200,7 @@ public class BallerinaEntity : Entity
         }
         else
         {
+            SceneLoader.wasPassive = false;
             GlobalVolumeEffects.Instance.PlayHitImpact();
         }
         Instantiate(ParticleFx, transform.position, Quaternion.identity);
@@ -406,7 +407,6 @@ public class BallerinaEntity : Entity
             {
                 case EnemyDeathType.Boss:
                     screamToPlay = SoundEffectsManager.soundEffects.ScreamBoss;
-                    GameManager.Instance.EndGame(false);
                     break;
 
                 case EnemyDeathType.Gingerbread:

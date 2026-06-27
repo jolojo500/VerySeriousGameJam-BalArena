@@ -26,6 +26,7 @@ public class ActData
     public int TotalEnemiesInAct = 20;
     public int MaxEnemiesAlive = 3;
     public float ActDuration = 120f;
+    public float SpawnDelay = 1f;
 
     [Header("Spawn Percentages")]
     public EnemySpawnPercent[] SpawnTable;
@@ -73,9 +74,12 @@ public class WaveManager : MonoBehaviour
     public Transform PlayerTransform;
     public Vector3 PlayerResetPosition = Vector3.zero;
     public float PlayerResetGlideDuration = 0.75f;
+    [Header("Win Transition")]
+    public float WinPanelWaitTime = 5f;
+    public bool KeepGameplayFrozenAfterWin = true;
 
     private GameObject activeBoss;
-
+    public Player player;
     void Awake()
     {
         Instance = this;
@@ -139,7 +143,7 @@ public class WaveManager : MonoBehaviour
             if (canSpawnMoreTotal && hasRoomForEnemy && spawnReady)
             {
                 SpawnEnemy(data);
-                spawnCooldown = SpawnDelay;
+                spawnCooldown = data.SpawnDelay; ;
             }
 
             yield return null;
@@ -234,6 +238,12 @@ public class WaveManager : MonoBehaviour
 
         int nextAct = CurrentAct + 1;
 
+        if (nextAct >= Acts.Length)
+        {
+            StartCoroutine(WinTransitionRoutine());
+            return;
+        }
+
         StartCoroutine(StartActWithTransitionRoutine(nextAct));
     }
 
@@ -289,7 +299,7 @@ public class WaveManager : MonoBehaviour
         }
         yield return GlidePlayerToResetPosition();
         yield return new WaitForSeconds(TransitionPanelWaitTime);
-
+        player.Attributes.AddToHealth(1);
         if (transitionPanel != null)
             transitionPanel.SetActive(false);
 
@@ -502,6 +512,27 @@ public class WaveManager : MonoBehaviour
         activeBoss = Instantiate(data.BossPrefab, spawnPosition, spawnRotation);
 
         Debug.Log($"Spawned boss for {data.ActName} after {data.BossSpawnDelay} seconds.");
+    }
+    IEnumerator WinTransitionRoutine()
+    {
+        MusicManager.Instance.StopAllMusicWithFade();
+
+        FreezeGameplay();
+
+        if (CurtainController != null && CurtainController.isOpen)
+        {
+            SoundEffectsManager.Instance.PlaySoundFXClip(
+                SoundEffectsManager.soundEffects.Cheer,
+                gameObject.transform
+            );
+
+            StartCoroutine(CurtainController.PlayClose());
+            yield return new WaitForSeconds(TransitionPanelWaitTime);
+        }
+        GameManager.Instance.EndGame(false);
+
+        if (!KeepGameplayFrozenAfterWin)
+            UnfreezeGameplay();
     }
 
 }

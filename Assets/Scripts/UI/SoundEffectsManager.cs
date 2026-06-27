@@ -19,7 +19,7 @@ public class SoundEffectsManager : MonoBehaviour
         ScreamGinger,
         ScreamBoss
     }
-    public float volume = 0.1f;
+    [SerializeField]private float volume = 0.1f;
     public AudioClip[] audioClips;
     private void Awake()
     {

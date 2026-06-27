@@ -17,7 +17,11 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
-    }   
+    }
+    private void Start()
+    {
+        MusicManager.Instance.audioSource.pitch = 1f;
+    }
     private void Update()
     {
         if (GameInput.GetButtonDown("Pause"))
@@ -27,13 +31,18 @@ public class GameManager : MonoBehaviour
     public void EndGame(bool isDead)
     {
         gameEnded = true;
+        SceneLoader.gameLost = isDead;
         if (isDead)
         {
             GlobalVolumeEffects.Instance.PlayDeath();
             MusicManager.Instance.audioSource.pitch = 0.5f;
-            SoundEffectsManager.Instance.volume = 0;
+            Invoke("loadScene", 5);
         }
-        SceneLoader.Instance.LoadScene(0);
+        else
+        {
+            SceneLoader.Instance.LoadScene(2);
+        }
+        
     }
     public void TogglePause()
     {
@@ -42,5 +51,9 @@ public class GameManager : MonoBehaviour
         PauseScreen.SetActive(!isPaused);
         Time.timeScale = isPaused ? 1f : 0f;
         
+    }
+    private void loadScene()
+    {
+        SceneLoader.Instance.LoadScene(2);
     }
 }

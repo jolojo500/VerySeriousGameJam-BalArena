@@ -147,6 +147,7 @@ namespace Venice
         [Header("25% Kick")]
         public PlayerKickTier Tier25 = new PlayerKickTier
         {
+            EnergyCost = 25f,
             Damage = 1,
             KnockbackForce = 2f,
             HitFreezeLength = 0.06f,
@@ -161,6 +162,7 @@ namespace Venice
         [Header("50% Kick")]
         public PlayerKickTier Tier50 = new PlayerKickTier
         {
+            EnergyCost = 25f,
             Damage = 1,
             KnockbackForce = 4f,
             HitFreezeLength = 0.09f,
@@ -175,6 +177,7 @@ namespace Venice
         [Header("75% Kick")]
         public PlayerKickTier Tier75 = new PlayerKickTier
         {
+            EnergyCost = 40f,
             Damage = 2,
             KnockbackForce = 6f,
             HitFreezeLength = 0.12f,
@@ -189,6 +192,7 @@ namespace Venice
         [Header("100% Kick")]
         public PlayerKickTier Tier100 = new PlayerKickTier
         {
+            EnergyCost = 60f,
             Damage = 3,
             KnockbackForce = 8f,
             HitFreezeLength = 0.16f,
@@ -211,44 +215,42 @@ namespace Venice
 
             if (percent < 25f)
                 return false;
-
-            int clampedPercent = Mathf.FloorToInt(percent / 25f) * 25;
-            clampedPercent = Mathf.Clamp(clampedPercent, 25, 100);
-
-            switch (clampedPercent)
+            if(percent >= 90f)
             {
-                case 25:
-                    tier = Tier25;
-                    break;
-
-                case 50:
-                    tier = Tier50;
-                    break;
-
-                case 75:
-                    tier = Tier75;
-                    break;
-
-                case 100:
-                    tier = Tier100;
-                    break;
+                tier = Tier100;
+            }
+            else if (percent >= 70f)
+            {
+                tier = Tier75;
+            }
+            else if (percent >= 45f)
+            {
+                tier = Tier50;
+            }
+            else if (percent >= 20f)
+            {
+                tier = Tier25;
             }
 
             return true;
         }
 
-        public float GetEnergyCost(float currentEnergy)
+        public float GetEnergyCost(PlayerKickTier tier, float currentEnergy)
         {
             if (ConsumeAllEnergyOnKick)
                 return currentEnergy;
 
-            return EnergySpentPerKick;
+            return tier.EnergyCost;
         }
     }
 
     [Serializable]
     public struct PlayerKickTier
     {
+        [Header("Energy")]
+        public float EnergyCost;
+
+        [Header("Power")]
         public int Damage;
         public float KnockbackForce;
         public float HitFreezeLength;

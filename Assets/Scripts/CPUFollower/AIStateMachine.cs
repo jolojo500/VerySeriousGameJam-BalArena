@@ -1,22 +1,25 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D.Animation;
 using Venice;
 public enum AIStartMode
 {
     WanderUntilHit,
-    HostileByDefault
-}   
+    HostileByDefault,
+    PurePassiveAlarm
+}
 public class AIStateMachine : StateMachine<CPUAIState>
 {
     private static readonly List<AIStateMachine> AllBallerinaAIs = new();
-
     [Header("References")]
     public CPUInputManager CPUInput { get; private set; }
     public BallerinaEntity ControlledEntity;
-
+    public SpriteLibrary DefaultSpriteLibrary;
+    public SpriteLibraryAsset AgressiveSpriteLibrary;
     [Header("Aggro")]
     public bool IsAggressive { get; private set; }
     public bool AlertAllBallerinasOnHit = false;
+    public bool IsPurePassiveAlarm => StartMode == AIStartMode.PurePassiveAlarm;
 
     [Header("Wandering")]
     public float ArenaRange = 13f;
@@ -70,6 +73,11 @@ public class AIStateMachine : StateMachine<CPUAIState>
     [Header("Aggro")]
     public AIStartMode StartMode = AIStartMode.WanderUntilHit;
 
+    [Header("Close Player Stop")]
+    public bool StopMovingWhenCloseToPlayer = true;
+    public float StopMovingDistance = 2.2f;
+    public float ResumeMovingDistance = 2.8f;
+    public bool ZeroVelocityWhenStopped = true;
     private void Awake()
     {
         CPUInput = GetComponent<CPUInputManager>();
@@ -119,10 +127,16 @@ public class AIStateMachine : StateMachine<CPUAIState>
         Add(new HostileState());
         Add(new RunAwayState());
 
-        if (StartMode == AIStartMode.HostileByDefault)
+        if (StartMode == AIStartMode.HostileByDefault || (SuspicionManager.Instance.CurrentPhaseName == "Spotlight"&&StartMode != AIStartMode.PurePassiveAlarm))
         {
             IsAggressive = true;
+            DefaultSpriteLibrary.spriteLibraryAsset = AgressiveSpriteLibrary;
             Initialize<HostileState>();
+        }
+        else if (StartMode == AIStartMode.PurePassiveAlarm)
+        {
+            IsAggressive = false;
+            Initialize<StandByState>();
         }
         else
         {
@@ -158,28 +172,53 @@ public class AIStateMachine : StateMachine<CPUAIState>
 
     public void AlertFromHit()
     {
-        Alert(false);
+        if (IsPurePassiveAlarm)
+        {
+            AlertAllNonPassiveBallerinas();
+            return;
+        }
+
+        BecomeAggressive();
 
         if (!AlertAllBallerinasOnHit)
             return;
 
-        foreach (AIStateMachine ai in AllBallerinaAIs)
-        {
-            if (ai == null || ai == this)
-                continue;
-
-            ai.Alert(true);
-        }
+        AlertAllNonPassiveBallerinas();
     }
-
-    private void Alert(bool fromAlly)
+    public void BecomeAggressive()
     {
-        if (IsAggressive)
+        if (IsPurePassiveAlarm)
             return;
 
+        if (IsAggressive)
+            return;
+        DefaultSpriteLibrary.spriteLibraryAsset = AgressiveSpriteLibrary;
         IsAggressive = true;
-
         Set<HostileState>();
+    }
+
+    public static void AlertAllNonPassiveBallerinas()
+    {
+        foreach (AIStateMachine ai in AllBallerinaAIs)
+        {
+            if (ai == null)
+                continue;
+
+            if (!ai.isActiveAndEnabled)
+                continue;
+
+            if (ai.ControlledEntity == null || ai.ControlledEntity.IsDead)
+                continue;
+
+            if (ai.IsPurePassiveAlarm)
+                continue;
+
+            ai.BecomeAggressive();
+        }
+    }
+    private void Alert(bool fromAlly)
+    {
+        BecomeAggressive();
     }
 
     public Vector3 GetRandomWanderPoint()
@@ -265,4 +304,21 @@ public class AIStateMachine : StateMachine<CPUAIState>
 
         Debug.Log($"{name} stunned for {stunTimer} seconds.");
     }
+    public static void AlertCurrentlyAliveBallerinas()
+    {
+        foreach (AIStateMachine ai in AllBallerinaAIs)
+        {
+            if (ai == null)
+                continue;
+
+            if (!ai.isActiveAndEnabled)
+                continue;
+
+            if (ai.ControlledEntity == null || ai.ControlledEntity.IsDead)
+                continue;
+
+            ai.BecomeAggressive();
+        }
+    }
+
 }

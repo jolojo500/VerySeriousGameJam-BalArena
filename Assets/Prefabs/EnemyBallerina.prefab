@@ -75,7 +75,7 @@ MonoBehaviour:
   Team: 1
   PhysicsInfo: {fileID: 11400000, guid: 6200e12f130792745bce13394f1cbca5, type: 2}
   Attributes:
-    MaxHealth: 3
+    MaxHealth: 2
     MaxSpin: 0
     MaxSuspicion: 0
     CurrentHealth: 0
@@ -116,6 +116,7 @@ MonoBehaviour:
   HitLaunchUpMultiplier: 0.35
   MaxHitLaunchSpeed: 15
   DeathArcTargetZOffset: -20
+  EnemyDeathType: 0
   EnemyVisual: {fileID: 4715938878045391475}
   GroundMask:
     serializedVersion: 2
@@ -163,6 +164,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AIStateMachine
   ControlledEntity: {fileID: 4557740656623254548}
+  DefaultSpriteLibrary: {fileID: 8296599960531671669}
+  AgressiveSpriteLibrary: {fileID: 7108339969198208228, guid: f9f4091374169a041b41d0ceddecd04d, type: 3}
   AlertAllBallerinasOnHit: 0
   ArenaRange: 13
   WanderPointReachedDistance: 1.2
@@ -175,7 +178,7 @@ MonoBehaviour:
   PreferredPlayerDistance: 3
   PreferredDistanceBuffer: 0.6
   StrafeWeight: 0.45
-  DashCooldownMin: 2
+  DashCooldownMin: 3
   DashCooldownMax: 4
   DashDuration: 0.45
   DashImpulse: 7
@@ -198,6 +201,10 @@ MonoBehaviour:
   AIJumpSpeed: 12
   DefaultStunDuration: 0.65
   StartMode: 0
+  StopMovingWhenCloseToPlayer: 1
+  StopMovingDistance: 2.2
+  ResumeMovingDistance: 2.8
+  ZeroVelocityWhenStopped: 1
 --- !u!114 &8326835988463794670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,7 +335,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 2
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: -1322775394, guid: 2a12808c467747b4aa67a4dd6666cfaa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -336,7 +343,7 @@ SpriteRenderer:
   m_Size: {x: 9.999999, y: 5.6268454}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
 --- !u!95 &6742881060862864685
@@ -405,7 +412,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SpriteResolver
   m_CategoryHash: 1.1944159e-36
-  m_labelHash: 5.2834693e-19
+  m_labelHash: 0.000034959514
   m_SpriteKey: 0
   m_SpriteHash: 109289164
 --- !u!1 &6060623868339143721
@@ -504,6 +511,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6723220469602183212}
   - component: {fileID: 2591762846798926409}
+  - component: {fileID: 7939684839742176538}
   m_Layer: 7
   m_Name: Input
   m_TagString: Untagged
@@ -538,7 +546,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
-  m_Actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_Actions: {fileID: 0}
   m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
@@ -556,3 +564,17 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &7939684839742176538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7940453228006178327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c29cff538c195c249b69c6f2236de67b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SpriteLibrary
+  m_Library: []
+  m_SpriteLibraryAsset: {fileID: 7108339969198208228, guid: f9f4091374169a041b41d0ceddecd04d, type: 3}

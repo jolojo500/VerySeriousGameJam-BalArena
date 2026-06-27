@@ -171,7 +171,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 2
-  m_Sprite: {fileID: -465459294, guid: c36637d484c4310489c40c2301897c20, type: 3}
+  m_Sprite: {fileID: 908348968, guid: 2a12808c467747b4aa67a4dd6666cfaa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -247,10 +247,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed8b1ae4e4e52b34ea557c1c11e076fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SpriteResolver
-  m_CategoryHash: 0
-  m_labelHash: 0
+  m_CategoryHash: 1.1944159e-36
+  m_labelHash: 0.000034959514
   m_SpriteKey: 0
-  m_SpriteHash: 0
+  m_SpriteHash: 109289164
 --- !u!1 &8892549870801587365
 GameObject:
   m_ObjectHideFlags: 0
@@ -295,7 +295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
-  m_Actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_Actions: {fileID: 0}
   m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
@@ -387,7 +387,7 @@ MonoBehaviour:
   Team: 1
   PhysicsInfo: {fileID: 11400000, guid: 6200e12f130792745bce13394f1cbca5, type: 2}
   Attributes:
-    MaxHealth: 5
+    MaxHealth: 6
     MaxSpin: 0
     MaxSuspicion: 0
     CurrentHealth: 0
@@ -428,6 +428,7 @@ MonoBehaviour:
   HitLaunchUpMultiplier: 0.35
   MaxHitLaunchSpeed: 15
   DeathArcTargetZOffset: -20
+  EnemyDeathType: 0
   EnemyVisual: {fileID: 2907091811380840680}
   GroundMask:
     serializedVersion: 2
@@ -475,6 +476,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AIStateMachine
   ControlledEntity: {fileID: 2680305391356667036}
+  DefaultSpriteLibrary: {fileID: 1743393522962078584}
+  AgressiveSpriteLibrary: {fileID: 7108339969198208228, guid: 1d23a2e99997eda4b977a1d162b14e03, type: 3}
   AlertAllBallerinasOnHit: 0
   ArenaRange: 13
   WanderPointReachedDistance: 1.2
@@ -509,7 +512,11 @@ MonoBehaviour:
   JumpChanceWhenTimerEnds: 0.5
   AIJumpSpeed: 12
   DefaultStunDuration: 0.65
-  StartMode: 0
+  StartMode: 2
+  StopMovingWhenCloseToPlayer: 1
+  StopMovingDistance: 2.2
+  ResumeMovingDistance: 2.8
+  ZeroVelocityWhenStopped: 1
 --- !u!114 &1056396336227849058
 MonoBehaviour:
   m_ObjectHideFlags: 0

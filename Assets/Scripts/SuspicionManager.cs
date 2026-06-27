@@ -11,7 +11,6 @@ public class SuspicionManager : MonoBehaviour
         NormalLights,
         Spotlight
     }
-
     [Header("References")]
     public Player Player;
     public SuspicionZone Zone;
@@ -137,6 +136,7 @@ public class SuspicionManager : MonoBehaviour
         animator1.SetBool("sus", true);
         animator2.SetBool("sus", true);
         Player.Attributes.CurrentSuspicion = 0;
+        AIStateMachine.AlertCurrentlyAliveBallerinas();
         Debug.Log("Spotlight phase started.");
     }
 

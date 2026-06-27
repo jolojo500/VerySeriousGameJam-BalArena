@@ -40,8 +40,8 @@ public class MainMenuManager : MonoBehaviour
         ShowPanel(mainMenuPanel);
 
         startButton.onClick.AddListener(OnStartClicked);
-        //settingsButton.onClick.AddListener(OnSettingsClicked);
-        //creditsButton.onClick.AddListener(OnCreditsClicked);
+        settingsButton.onClick.AddListener(OnSettingsClicked);
+        creditsButton.onClick.AddListener(OnCreditsClicked);
         leaveButton.onClick.AddListener(OnLeaveClicked);
 
         if (introVideoPlayer != null)
