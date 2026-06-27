@@ -29,6 +29,12 @@ public class ActData
 
     [Header("Spawn Percentages")]
     public EnemySpawnPercent[] SpawnTable;
+
+    [Header("Boss")]
+    public GameObject BossPrefab;
+    public Transform BossSpawnPoint;
+    public bool SpawnBossInThisAct = false;
+    public float BossSpawnDelay = 20f;
 }
 
 public class WaveManager : MonoBehaviour
@@ -63,6 +69,12 @@ public class WaveManager : MonoBehaviour
 
     private Coroutine actCoroutine;
     private bool actRunning;
+    [Header("Player Reset Between Acts")]
+    public Transform PlayerTransform;
+    public Vector3 PlayerResetPosition = Vector3.zero;
+    public float PlayerResetGlideDuration = 0.75f;
+
+    private GameObject activeBoss;
 
     void Awake()
     {
@@ -85,12 +97,6 @@ public class WaveManager : MonoBehaviour
 
     IEnumerator ActRoutine(int act)
     {
-        if (act >= Acts.Length)
-        {
-            SpawnBoss();
-            yield break;
-        }
-
         CurrentAct = act;
 
         ActData data = Acts[CurrentAct];
@@ -102,7 +108,7 @@ public class WaveManager : MonoBehaviour
         actRunning = true;
 
         ClearRemainingEnemies();
-
+        StartCoroutine(SpawnBossAfterDelay(data, CurrentAct));
         MusicManager.Instance.PlayActMusic(CurrentAct);
 
         float spawnCooldown = 0f;
@@ -231,20 +237,6 @@ public class WaveManager : MonoBehaviour
         StartCoroutine(StartActWithTransitionRoutine(nextAct));
     }
 
-    void NextAct()
-    {
-        int nextAct = CurrentAct + 1;
-        GlobalVolumeEffects.Instance.PlayAct(nextAct);
-        if (nextAct < Acts.Length)
-        {
-            StartAct(nextAct);
-        }
-        else
-        {
-            SpawnBoss();
-        }
-    }
-
     void ClearRemainingEnemies()
     {
         for (int i = activeEnemies.Count - 1; i >= 0; i--)
@@ -257,25 +249,35 @@ public class WaveManager : MonoBehaviour
         enemiesAlive = 0;
     }
 
-    void SpawnBoss()
-    {
-        Debug.Log("GINGERBREAD KING");
-    }
+
     IEnumerator StartActWithTransitionRoutine(int actToStart)
     {
         MusicManager.Instance.StopAllMusicWithFade();
-        GlobalVolumeEffects.Instance.PlayAct(actToStart);
         FreezeGameplay();
+        
 
-        // close curtains
+        bool hasValidAct = actToStart >= 0 && actToStart < Acts.Length;
+
+        if (!hasValidAct)
+        {
+            Debug.Log("No more acts.");
+            UnfreezeGameplay();
+            yield break;
+        }
+
+        GlobalVolumeEffects.Instance.PlayAct(actToStart);
+
         if (CurtainController != null && CurtainController.isOpen)
         {
-            SoundEffectsManager.Instance.PlaySoundFXClip(SoundEffectsManager.soundEffects.Cheer, gameObject.transform);
+            SoundEffectsManager.Instance.PlaySoundFXClip(
+                SoundEffectsManager.soundEffects.Cheer,
+                gameObject.transform
+            );
+
             StartCoroutine(CurtainController.PlayClose());
             yield return new WaitForSeconds(TransitionPanelWaitTime);
         }
 
-        // show act transition panel
         GameObject transitionPanel = null;
 
         if (ActTransitionPanels != null && actToStart < ActTransitionPanels.Length)
@@ -285,36 +287,33 @@ public class WaveManager : MonoBehaviour
             if (transitionPanel != null)
                 transitionPanel.SetActive(true);
         }
-
+        yield return GlidePlayerToResetPosition();
         yield return new WaitForSeconds(TransitionPanelWaitTime);
 
-        // hide act transition panel
         if (transitionPanel != null)
             transitionPanel.SetActive(false);
+
         for (int i = 0; i < Acts.Length; i++)
         {
             if (Acts[i] != null && Acts[i].Props != null)
                 Acts[i].Props.SetActive(i == actToStart);
         }
-        SetMaterialColor(Acts[actToStart].floor, Acts[actToStart].floor_color);
-        // open curtains
+
+        if (Acts[actToStart].floor != null)
+            SetMaterialColor(Acts[actToStart].floor, Acts[actToStart].floor_color);
+
+        
         if (CurtainController != null)
         {
             StartCoroutine(CurtainController.PlayOpen());
             yield return new WaitForSeconds(TransitionPanelWaitTime);
         }
+
         MusicManager.Instance.PlayActMusic(actToStart);
+
         UnfreezeGameplay();
-        
-        // start act after transition is fully finished
-        if (actToStart < Acts.Length-1)
-        {            
-            StartAct(actToStart);
-        }
-        else
-        {
-            SpawnBoss();
-        }
+
+        StartAct(actToStart);
     }
     void HideAllTransitionPanels()
     {
@@ -388,6 +387,121 @@ public class WaveManager : MonoBehaviour
         {
             Debug.LogWarning($"{mat.name} does not have _BaseColor or _Color.");
         }
+    }
+    IEnumerator GlidePlayerToResetPosition()
+    {
+        Transform player = PlayerTransform;
+
+        if (player == null && Player.Instance != null)
+            player = Player.Instance.transform;
+
+        if (player == null)
+        {
+            Debug.LogWarning("No player transform assigned for act reset.");
+            yield break;
+        }
+
+        Rigidbody playerRb = null;
+
+        if (Player.Instance != null)
+            playerRb = Player.Instance.Rb;
+
+        if (playerRb == null)
+            playerRb = player.GetComponent<Rigidbody>();
+
+        if (playerRb != null)
+        {
+            playerRb.linearVelocity = Vector3.zero;
+            playerRb.angularVelocity = Vector3.zero;
+        }
+
+        Vector3 startPos = player.position;
+        float timer = 0f;
+
+        while (timer < PlayerResetGlideDuration)
+        {
+            timer += Time.deltaTime;
+
+            float t = Mathf.Clamp01(timer / PlayerResetGlideDuration);
+
+            // smooth easing
+            t = t * t * (3f - 2f * t);
+
+            player.position = Vector3.Lerp(startPos, PlayerResetPosition, t);
+
+            yield return null;
+        }
+
+        player.position = PlayerResetPosition;
+
+        if (playerRb != null)
+        {
+            playerRb.linearVelocity = Vector3.zero;
+            playerRb.angularVelocity = Vector3.zero;
+        }
+    }
+
+    IEnumerator SpawnBossAfterDelay(ActData data, int actIndex)
+    {
+        if (data == null)
+            yield break;
+
+        if (!data.SpawnBossInThisAct)
+            yield break;
+
+        float timer = 0f;
+
+        while (timer < data.BossSpawnDelay)
+        {
+            if (!actRunning)
+                yield break;
+
+            if (CurrentAct != actIndex)
+                yield break;
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        SpawnBossForAct(data);
+        yield return new WaitForSeconds(1.25f);
+        SoundEffectsManager.Instance.PlaySoundFXClip(SoundEffectsManager.soundEffects.ThudBoss, gameObject.transform);
+        CameraShakeManager.Instance.Rumble(1.0f);
+    }
+
+    void SpawnBossForAct(ActData data)
+    {
+        
+        if (data == null)
+            return;
+
+        if (data.BossPrefab == null)
+        {
+            Debug.LogWarning($"Act {CurrentAct + 1} wants to spawn a boss, but no BossPrefab is assigned.");
+            return;
+        }
+
+        if (activeBoss != null)
+            Destroy(activeBoss);
+
+        Vector3 spawnPosition = Vector3.zero;
+        Quaternion spawnRotation = Quaternion.identity;
+
+        if (data.BossSpawnPoint != null)
+        {
+            spawnPosition = data.BossSpawnPoint.position;
+            spawnRotation = data.BossSpawnPoint.rotation;
+        }
+        else if (SpawnPoints != null && SpawnPoints.Length > 0)
+        {
+            Transform randomPoint = SpawnPoints[Random.Range(0, SpawnPoints.Length)];
+            spawnPosition = randomPoint.position;
+            spawnRotation = randomPoint.rotation;
+        }
+
+        activeBoss = Instantiate(data.BossPrefab, spawnPosition, spawnRotation);
+
+        Debug.Log($"Spawned boss for {data.ActName} after {data.BossSpawnDelay} seconds.");
     }
 
 }

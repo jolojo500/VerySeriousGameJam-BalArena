@@ -8,6 +8,12 @@ public enum EntityTeam
     Player,
     Enemy
 }
+public enum EnemyDeathType
+{
+    Normal,
+    Gingerbread,
+    Boss
+}
 public class BallerinaEntity : Entity
 {
 
@@ -63,6 +69,8 @@ public class BallerinaEntity : Entity
     private float DeathArcUpAmount = 4.5f;
     private bool MakeRigidbodyKinematicOnDeath = true;
     private AIStateMachine ai;
+    [Header("Enemy Death Audio")]
+    public EnemyDeathType EnemyDeathType = EnemyDeathType.Normal;
     public override void Init()
     {
         base.Init(); // Important: initialize Rb first
@@ -227,10 +235,11 @@ public class BallerinaEntity : Entity
         }
         else
         {
-            GameManager.Instance.EndGame();
+            GameManager.Instance.EndGame(true);
         }
         IsDead = true;
         SoundEffectsManager.Instance.PlaySoundFXClip(SoundEffectsManager.soundEffects.Hit, gameObject.transform);
+        PlayDeathScream();
         SoundEffectsManager.Instance.PlaySoundFXClip(SoundEffectsManager.soundEffects.Scream, gameObject.transform);
         IsInIF = false;
         IFTimer = 0f;
@@ -379,5 +388,37 @@ public class BallerinaEntity : Entity
 
         transform.position = endPosition;
         Visual.selfDestruct();
+    }
+    private void PlayDeathScream()
+    {
+        if (SoundEffectsManager.Instance == null)
+            return;
+
+        SoundEffectsManager.soundEffects screamToPlay;
+
+        if (this is Player)
+        {
+            screamToPlay = SoundEffectsManager.soundEffects.Scream;
+        }
+        else
+        {
+            switch (EnemyDeathType)
+            {
+                case EnemyDeathType.Boss:
+                    screamToPlay = SoundEffectsManager.soundEffects.ScreamBoss;
+                    GameManager.Instance.EndGame(false);
+                    break;
+
+                case EnemyDeathType.Gingerbread:
+                    screamToPlay = SoundEffectsManager.soundEffects.ScreamGinger;
+                    break;
+
+                default:
+                    screamToPlay = SoundEffectsManager.soundEffects.Scream;
+                    break;
+            }
+        }
+
+        SoundEffectsManager.Instance.PlaySoundFXClip(screamToPlay, gameObject.transform);
     }
 }

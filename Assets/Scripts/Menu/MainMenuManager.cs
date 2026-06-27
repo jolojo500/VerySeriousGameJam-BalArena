@@ -12,6 +12,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private GameObject videoPanel;
     [SerializeField] private GameObject tutorialPanel;
+    [SerializeField] private GameObject tutorial;
 
     [Header("Buttons")]
     [SerializeField] private Button startButton;
@@ -39,8 +40,8 @@ public class MainMenuManager : MonoBehaviour
         ShowPanel(mainMenuPanel);
 
         startButton.onClick.AddListener(OnStartClicked);
-        settingsButton.onClick.AddListener(OnSettingsClicked);
-        creditsButton.onClick.AddListener(OnCreditsClicked);
+        //settingsButton.onClick.AddListener(OnSettingsClicked);
+        //creditsButton.onClick.AddListener(OnCreditsClicked);
         leaveButton.onClick.AddListener(OnLeaveClicked);
 
         if (introVideoPlayer != null)
@@ -107,7 +108,11 @@ public class MainMenuManager : MonoBehaviour
         yield return StartCoroutine(SceneLoader.Instance.FadeOutRoutine());
         introVideoPlayerObject.SetActive(false);
         ShowPanel(tutorialPanel);
-
+        yield return StartCoroutine(SceneLoader.Instance.FadeInRoutine());
+        yield return new WaitForSeconds(1);
+        tutorial.SetActive(true);
+        tutorial.GetComponent<AudioSource>().Play();
+        yield return new WaitForSeconds(1);
         waitingForTutorialInput = true;
         sequenceRunning = false;
     }
@@ -116,7 +121,8 @@ public class MainMenuManager : MonoBehaviour
     {
         sequenceRunning = true;
         waitingForTutorialInput = false;
-
+        tutorial.SetActive(true);
+        tutorial.GetComponent<AudioSource>().Play();
         yield return StartCoroutine(SceneLoader.Instance.FadeOutRoutine());
         SceneLoader.Instance.LoadSceneAlreadyFadedOut(gameSceneIndex);
     }

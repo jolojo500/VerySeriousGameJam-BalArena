@@ -115,6 +115,7 @@ MonoBehaviour:
   HitLaunchHorizontalMultiplier: 1
   HitLaunchUpMultiplier: 0.35
   MaxHitLaunchSpeed: 15
+  DeathArcTargetZOffset: -20
   EnemyVisual: {fileID: 4715938878045391475}
   GroundMask:
     serializedVersion: 2
@@ -254,6 +255,8 @@ GameObject:
   - component: {fileID: 3198359843136631104}
   - component: {fileID: 6742881060862864685}
   - component: {fileID: 4715938878045391475}
+  - component: {fileID: 8296599960531671669}
+  - component: {fileID: 4088796498761683228}
   m_Layer: 7
   m_Name: Graphic
   m_TagString: Untagged
@@ -325,15 +328,15 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 2
-  m_Sprite: {fileID: 1490209349, guid: 558a5160840ca8d40be40aa5c15cb719, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 2}
+  m_Size: {x: 9.999999, y: 5.6268454}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
 --- !u!95 &6742881060862864685
@@ -375,6 +378,36 @@ MonoBehaviour:
   Animator: {fileID: 6742881060862864685}
   EntitySkin: {fileID: 5088564408228707811}
   Skin: {fileID: 3198359843136631104}
+--- !u!114 &8296599960531671669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4304532153279236875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c29cff538c195c249b69c6f2236de67b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SpriteLibrary
+  m_Library: []
+  m_SpriteLibraryAsset: {fileID: 7108339969198208228, guid: a32837489aeb3344e8d5492dfe5f2381, type: 3}
+--- !u!114 &4088796498761683228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4304532153279236875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed8b1ae4e4e52b34ea557c1c11e076fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SpriteResolver
+  m_CategoryHash: 1.1944159e-36
+  m_labelHash: 5.2834693e-19
+  m_SpriteKey: 0
+  m_SpriteHash: 109289164
 --- !u!1 &6060623868339143721
 GameObject:
   m_ObjectHideFlags: 0

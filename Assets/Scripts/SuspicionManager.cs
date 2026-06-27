@@ -77,6 +77,7 @@ public class SuspicionManager : MonoBehaviour
         {
             if (PhaseTimer <= 0f)
             {
+                SoundEffectsManager.Instance.PlaySoundFXClip(SoundEffectsManager.soundEffects.lights, gameObject.transform);
                 StartSpotlightPhase();
             }
 
@@ -89,6 +90,7 @@ public class SuspicionManager : MonoBehaviour
 
             if (PhaseTimer <= 0f)
             {
+                SoundEffectsManager.Instance.PlaySoundFXClip(SoundEffectsManager.soundEffects.lights, gameObject.transform);
                 StartNormalLightsPhase();
             }
         }

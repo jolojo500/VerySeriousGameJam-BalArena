@@ -98,6 +98,8 @@ GameObject:
   - component: {fileID: 3515773228204386960}
   - component: {fileID: 8276798365358815840}
   - component: {fileID: 2907091811380840680}
+  - component: {fileID: 1743393522962078584}
+  - component: {fileID: 7733400698502037369}
   m_Layer: 7
   m_Name: Graphic
   m_TagString: Untagged
@@ -170,7 +172,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 2
   m_Sprite: {fileID: -465459294, guid: c36637d484c4310489c40c2301897c20, type: 3}
-  m_Color: {r: 0.22520883, g: 0.69803923, b: 0.21568628, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
@@ -219,6 +221,36 @@ MonoBehaviour:
   Animator: {fileID: 8276798365358815840}
   EntitySkin: {fileID: 7558837317982974280}
   Skin: {fileID: 3515773228204386960}
+--- !u!114 &1743393522962078584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6660041743646252499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c29cff538c195c249b69c6f2236de67b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SpriteLibrary
+  m_Library: []
+  m_SpriteLibraryAsset: {fileID: 7108339969198208228, guid: 592e174cabf3dbb43b99022dd8375546, type: 3}
+--- !u!114 &7733400698502037369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6660041743646252499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed8b1ae4e4e52b34ea557c1c11e076fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SpriteResolver
+  m_CategoryHash: 0
+  m_labelHash: 0
+  m_SpriteKey: 0
+  m_SpriteHash: 0
 --- !u!1 &8892549870801587365
 GameObject:
   m_ObjectHideFlags: 0
@@ -395,6 +427,7 @@ MonoBehaviour:
   HitLaunchHorizontalMultiplier: 1
   HitLaunchUpMultiplier: 0.35
   MaxHitLaunchSpeed: 15
+  DeathArcTargetZOffset: -20
   EnemyVisual: {fileID: 2907091811380840680}
   GroundMask:
     serializedVersion: 2

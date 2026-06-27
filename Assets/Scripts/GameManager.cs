@@ -24,12 +24,16 @@ public class GameManager : MonoBehaviour
             TogglePause();
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public void EndGame()
+    public void EndGame(bool isDead)
     {
         gameEnded = true;
-        GlobalVolumeEffects.Instance.PlayDeath();
-        MusicManager.Instance.audioSource.pitch = 0.5f;
-        SoundEffectsManager.Instance.volume = 0;
+        if (isDead)
+        {
+            GlobalVolumeEffects.Instance.PlayDeath();
+            MusicManager.Instance.audioSource.pitch = 0.5f;
+            SoundEffectsManager.Instance.volume = 0;
+        }
+        SceneLoader.Instance.LoadScene(0);
     }
     public void TogglePause()
     {

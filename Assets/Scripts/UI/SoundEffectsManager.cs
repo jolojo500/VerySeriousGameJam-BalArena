@@ -13,7 +13,11 @@ public class SoundEffectsManager : MonoBehaviour
         Scream,
         Cheer,
         CurtainOpen,
-        CurtainClose
+        CurtainClose,
+        lights,
+        ThudBoss,
+        ScreamGinger,
+        ScreamBoss
     }
     public float volume = 0.1f;
     public AudioClip[] audioClips;

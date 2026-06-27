@@ -57,6 +57,10 @@ public class SceneLoader : MonoBehaviour
 
     public IEnumerator FadeInRoutine()
     {
+        foreach (AudioSource source in Object.FindObjectsByType<AudioSource>(FindObjectsInactive.Exclude))
+        {
+            source.Stop();
+        }
         fadeImage.gameObject.SetActive(true);
 
         float t = 0f;

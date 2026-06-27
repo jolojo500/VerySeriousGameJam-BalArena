@@ -130,7 +130,12 @@ namespace Venice
                     HitCooldown = .3f,
                     Owner = Entity.gameObject
                 };
+                BossKnockbackResistance bossResistance = target.GetComponentInParent<BossKnockbackResistance>();
 
+                if (bossResistance != null)
+                {
+                    info.KnockbackForce *= bossResistance.KnockbackMultiplier;
+                }
                 target.Hit(info);
 
                 if (_isPlayerKick)

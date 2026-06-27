@@ -7,6 +7,7 @@ public class CameraShakeManager : MonoBehaviour
 
     [Header("Cinemachine")]
     public CinemachineImpulseSource ImpulseSource;
+    public CinemachineImpulseSource RumbleSource;
 
     private void Awake()
     {
@@ -22,5 +23,12 @@ public class CameraShakeManager : MonoBehaviour
             return;
 
         ImpulseSource.GenerateImpulse(strength);
+    }
+    public void Rumble(float strength)
+    {
+        if (ImpulseSource == null)
+            return;
+
+        RumbleSource.GenerateImpulse(strength);
     }
 }
