@@ -1,45 +1,40 @@
 using UnityEngine;
-using UnityEngine.Formats.Alembic.Importer;
 using System.Collections;
 
 public class DoubleCurtainController : MonoBehaviour
 {
-    public GameObject leftOpenModel;
-    public GameObject leftCloseModel;
-    public GameObject rightOpenModel;
-    public GameObject rightCloseModel;
+    [Header("Curtain Objects")]
+    public Transform leftCurtain;
+    public Transform rightCurtain;
 
-    public AlembicStreamPlayer leftOpenPlayer;
-    public AlembicStreamPlayer leftClosePlayer;
-    public AlembicStreamPlayer rightOpenPlayer;
-    public AlembicStreamPlayer rightClosePlayer;
+    [Header("X Positions")]
+    public float leftClosedX = -1f;
+    public float rightClosedX = 1f;
 
-    public float openEndTime = 14.58333f;
-    public float closeEndTime = 25f;
+    public float leftOpenX = -6f;
+    public float rightOpenX = 6f;
 
+    [Header("Timing")]
     public float openDuration = 6f;
     public float closeDuration = 6f;
 
+    [Header("State")]
     public bool isOpen = false;
-    bool isAnimating = false;
+
+    private bool isAnimating = false;
 
     void Start()
     {
-        leftOpenModel.SetActive(true);
-        rightOpenModel.SetActive(true);
+        SetCurtainX(leftCurtain, leftClosedX);
+        SetCurtainX(rightCurtain, rightClosedX);
 
-        leftCloseModel.SetActive(false);
-        rightCloseModel.SetActive(false);
-
-        leftOpenPlayer.CurrentTime = 0f;
-        rightOpenPlayer.CurrentTime = 0f;
-        leftClosePlayer.CurrentTime = 0f;
-        rightClosePlayer.CurrentTime = 0f;
+        isOpen = false;
     }
 
     public void ToggleCurtain()
     {
-        if (isAnimating) return;
+        if (isAnimating)
+            return;
 
         if (isOpen)
             StartCoroutine(PlayClose());
@@ -49,30 +44,39 @@ public class DoubleCurtainController : MonoBehaviour
 
     public IEnumerator PlayOpen()
     {
-        isAnimating = true;
-        SoundEffectsManager.Instance.PlaySoundFXClip(SoundEffectsManager.soundEffects.CurtainOpen, gameObject.transform);
-        leftCloseModel.SetActive(false);
-        rightCloseModel.SetActive(false);
+        if (isAnimating)
+            yield break;
 
-        leftOpenModel.SetActive(true);
-        rightOpenModel.SetActive(true);
+        isAnimating = true;
+
+        if (SoundEffectsManager.Instance != null)
+        {
+            SoundEffectsManager.Instance.PlaySoundFXClip(
+                SoundEffectsManager.soundEffects.CurtainOpen,
+                gameObject.transform
+            );
+        }
+
+        float leftStartX = leftCurtain.position.x;
+        float rightStartX = rightCurtain.position.x;
 
         float elapsed = 0f;
 
         while (elapsed < openDuration)
         {
-            float n = elapsed / openDuration;
-            float t = Mathf.Lerp(0f, openEndTime, n);
-
-            leftOpenPlayer.CurrentTime = t;
-            rightOpenPlayer.CurrentTime = t;
-
             elapsed += Time.deltaTime;
+
+            float t = Mathf.Clamp01(elapsed / openDuration);
+            t = SmoothEase(t);
+
+            SetCurtainX(leftCurtain, Mathf.Lerp(leftStartX, leftOpenX, t));
+            SetCurtainX(rightCurtain, Mathf.Lerp(rightStartX, rightOpenX, t));
+
             yield return null;
         }
 
-        leftOpenPlayer.CurrentTime = openEndTime;
-        rightOpenPlayer.CurrentTime = openEndTime;
+        SetCurtainX(leftCurtain, leftOpenX);
+        SetCurtainX(rightCurtain, rightOpenX);
 
         isOpen = true;
         isAnimating = false;
@@ -80,32 +84,56 @@ public class DoubleCurtainController : MonoBehaviour
 
     public IEnumerator PlayClose()
     {
-        isAnimating = true;
-        SoundEffectsManager.Instance.PlaySoundFXClip(SoundEffectsManager.soundEffects.CurtainClose, gameObject.transform);
-        leftOpenModel.SetActive(false);
-        rightOpenModel.SetActive(false);
+        if (isAnimating)
+            yield break;
 
-        leftCloseModel.SetActive(true);
-        rightCloseModel.SetActive(true);
+        isAnimating = true;
+
+        if (SoundEffectsManager.Instance != null)
+        {
+            SoundEffectsManager.Instance.PlaySoundFXClip(
+                SoundEffectsManager.soundEffects.CurtainClose,
+                gameObject.transform
+            );
+        }
+
+        float leftStartX = leftCurtain.position.x;
+        float rightStartX = rightCurtain.position.x;
 
         float elapsed = 0f;
 
         while (elapsed < closeDuration)
         {
-            float n = elapsed / closeDuration;
-            float t = Mathf.Lerp(0f, closeEndTime, n);
-
-            leftClosePlayer.CurrentTime = t;
-            rightClosePlayer.CurrentTime = t;
-
             elapsed += Time.deltaTime;
+
+            float t = Mathf.Clamp01(elapsed / closeDuration);
+            t = SmoothEase(t);
+
+            SetCurtainX(leftCurtain, Mathf.Lerp(leftStartX, leftClosedX, t));
+            SetCurtainX(rightCurtain, Mathf.Lerp(rightStartX, rightClosedX, t));
+
             yield return null;
         }
 
-        leftClosePlayer.CurrentTime = closeEndTime;
-        rightClosePlayer.CurrentTime = closeEndTime;
+        SetCurtainX(leftCurtain, leftClosedX);
+        SetCurtainX(rightCurtain, rightClosedX);
 
         isOpen = false;
         isAnimating = false;
+    }
+
+    private void SetCurtainX(Transform curtain, float x)
+    {
+        if (curtain == null)
+            return;
+
+        Vector3 pos = curtain.position;
+        pos.x = x;
+        curtain.position = pos;
+    }
+
+    private float SmoothEase(float t)
+    {
+        return t * t * (3f - 2f * t);
     }
 }
